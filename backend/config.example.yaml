@@ -1,2 +1,9 @@
 gql_server_conf:
   port: 8080
+
+db_conf:
+  username: root
+  password: pass12345
+  host: 1.2.3.4
+  port: 8080
+  database: database_name

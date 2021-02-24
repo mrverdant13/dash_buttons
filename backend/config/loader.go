@@ -18,6 +18,10 @@ func Init(path string) {
 	container.Singleton(func() GraphQLServerConf {
 		return config.GraphQLServerConf
 	})
+
+	container.Singleton(func() DbConf {
+		return config.DbConf
+	})
 }
 
 func load(path string) (config appConf) {
