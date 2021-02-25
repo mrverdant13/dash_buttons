@@ -22,6 +22,10 @@ func Init(path string) {
 	container.Singleton(func() DbConf {
 		return config.DbConf
 	})
+
+	container.Singleton(func() JWTConf {
+		return config.JWTConf
+	})
 }
 
 func load(path string) (config appConf) {
