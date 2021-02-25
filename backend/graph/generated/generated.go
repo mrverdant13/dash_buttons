@@ -50,6 +50,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		CreateDepartment func(childComplexity int, input model.NewDepartment) int
+		CreateUser       func(childComplexity int, input model.NewUser) int
 	}
 
 	Query struct {
@@ -57,14 +58,14 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Email    func(childComplexity int) int
-		ID       func(childComplexity int) int
-		Password func(childComplexity int) int
+		Email func(childComplexity int) int
+		ID    func(childComplexity int) int
 	}
 }
 
 type MutationResolver interface {
 	CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error)
+	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
 }
 type QueryResolver interface {
 	Departments(ctx context.Context) ([]*model.Department, error)
@@ -111,6 +112,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateDepartment(childComplexity, args["input"].(model.NewDepartment)), true
 
+	case "Mutation.createUser":
+		if e.complexity.Mutation.CreateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+
 	case "Query.departments":
 		if e.complexity.Query.Departments == nil {
 			break
@@ -131,13 +144,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.ID(childComplexity), true
-
-	case "User.password":
-		if e.complexity.User.Password == nil {
-			break
-		}
-
-		return e.complexity.User.Password(childComplexity), true
 
 	}
 	return 0, false
@@ -211,7 +217,6 @@ var sources = []*ast.Source{
 type User {
   id: ID!
   email: String!
-  password: String!
 }
 
 type Query {
@@ -229,6 +234,7 @@ input NewUser {
 
 type Mutation {
   createDepartment(input: NewDepartment!): Department!
+  createUser(input: NewUser!): User!
 }
 `, BuiltIn: false},
 }
@@ -245,6 +251,21 @@ func (ec *executionContext) field_Mutation_createDepartment_args(ctx context.Con
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDepartment(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewUser
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -418,6 +439,48 @@ func (ec *executionContext) _Mutation_createDepartment(ctx context.Context, fiel
 	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(model.NewUser))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Query_departments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -578,41 +641,6 @@ func (ec *executionContext) _User_email(ctx context.Context, field graphql.Colle
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Email, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _User_password(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1824,6 +1852,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "createUser":
+			out.Values[i] = ec._Mutation_createUser(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -1897,11 +1930,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "email":
 			out.Values[i] = ec._User_email(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "password":
-			out.Values[i] = ec._User_password(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2247,6 +2275,11 @@ func (ec *executionContext) unmarshalNNewDepartment2githubᚗcomᚋmrverdant13�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
+	res, err := ec.unmarshalInputNewUser(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalString(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2260,6 +2293,20 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 		}
 	}
 	return res
+}
+
+func (ec *executionContext) marshalNUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+	return ec._User(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._User(ctx, sel, v)
 }
 
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {

@@ -6,7 +6,6 @@ type Department {
 type User {
   id: ID!
   email: String!
-  password: String!
 }
 
 type Query {
@@ -24,4 +23,5 @@ input NewUser {
 
 type Mutation {
   createDepartment(input: NewDepartment!): Department!
+  createUser(input: NewUser!): User!
 }

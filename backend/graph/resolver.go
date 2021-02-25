@@ -1,6 +1,7 @@
 package graph
 
 import (
+	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
 )
 
@@ -11,11 +12,16 @@ import (
 // Resolver implementats schema.graphql
 type Resolver struct {
 	departmentsRepo departments.Repo
+	authService     auth.Service
 }
 
 // NewResolver creates a GraphQL resolver.
-func NewResolver(departmentsRepo departments.Repo) Resolver {
+func NewResolver(
+	departmentsRepo departments.Repo,
+	authService auth.Service,
+) Resolver {
 	return Resolver{
 		departmentsRepo: departmentsRepo,
+		authService:     authService,
 	}
 }
