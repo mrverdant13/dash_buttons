@@ -3,12 +3,23 @@ type Department {
   name: String!
 }
 
+type User {
+  id: ID!
+  email: String!
+  password: String!
+}
+
 type Query {
   departments: [Department!]!
 }
 
 input NewDepartment {
   name: String!
+}
+
+input NewUser {
+  email: String!
+  password: String!
 }
 
 type Mutation {

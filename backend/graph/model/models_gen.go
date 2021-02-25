@@ -10,3 +10,14 @@ type Department struct {
 type NewDepartment struct {
 	Name string `json:"name"`
 }
+
+type NewUser struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type User struct {
+	ID       string `json:"id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
