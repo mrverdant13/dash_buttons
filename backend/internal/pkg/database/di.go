@@ -1,13 +1,13 @@
 package database
 
 import (
-	"database/sql"
 	"log"
 
 	"github.com/golobby/container"
+	"gorm.io/gorm"
 )
 
-// Init creates and injects the "*sql.DB" for the entire app using the MySQL driver.
+// Init creates and injects the "*gorm.DB" for the entire app using the MySQL driver.
 func Init(migrate bool) {
 	initMySQLDatabase()
 	if migrate {
@@ -18,8 +18,13 @@ func Init(migrate bool) {
 // Dispose frees resources used by instances initialized by "Init".
 func Dispose() {
 	container.Make(
-		func(db *sql.DB) {
-			err := db.Close()
+		func(gormDB *gorm.DB) {
+			db, err := gormDB.DB()
+			if err != nil {
+				log.Fatalln(err.Error())
+			}
+
+			err = db.Close()
 			if err != nil {
 				log.Fatalln(err.Error())
 			}

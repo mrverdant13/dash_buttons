@@ -10,6 +10,8 @@ import (
 	"github.com/golang-migrate/migrate/database/mysql"
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/config"
+	mysqlgorm "gorm.io/driver/mysql"
+	"gorm.io/gorm"
 
 	//
 	_ "github.com/go-sql-driver/mysql"
@@ -18,12 +20,15 @@ import (
 
 const (
 	mySQLDriver           = "mysql"
-	mySQLConnStringFormat = "%s:%s@tcp(%s:%s)/%s"
+	mySQLConnStringFormat = "%s:%s@tcp(%s:%s)/%s?parseTime=true"
+
+	// DepartmentsTable is the departments table name.
+	DepartmentsTable = "Departments"
 )
 
 func initMySQLDatabase() {
 	container.Singleton(
-		func(destinationConf config.DbConf) *sql.DB {
+		func(destinationConf config.DbConf) *gorm.DB {
 			connectionString := fmt.Sprintf(
 				mySQLConnStringFormat,
 				destinationConf.Username,
@@ -33,7 +38,7 @@ func initMySQLDatabase() {
 				destinationConf.Database,
 			)
 
-			db, err := sql.Open(
+			sqlDB, err := sql.Open(
 				mySQLDriver,
 				connectionString,
 			)
@@ -41,12 +46,20 @@ func initMySQLDatabase() {
 				log.Fatalln(err.Error())
 			}
 
-			err = db.Ping()
+			gormDB, err := gorm.Open(
+				mysqlgorm.New(
+					mysqlgorm.Config{
+						Conn: sqlDB,
+					},
+				), &gorm.Config{},
+			)
+
+			err = sqlDB.Ping()
 			if err != nil {
-				log.Panic(err)
+				log.Fatalln(err.Error())
 			}
 
-			return db
+			return gormDB
 		},
 	)
 }
@@ -54,13 +67,20 @@ func initMySQLDatabase() {
 // Migrate uses migration SQL files.
 func Migrate() {
 	container.Make(
-		func(db *sql.DB) {
-			err := db.Ping()
+		func(gormDB *gorm.DB) {
+			sqlDB, err := gormDB.DB()
 			if err != nil {
-				log.Fatalln(err)
+				log.Fatalln(err.Error())
 			}
 
-			driver, _ := mysql.WithInstance(db, &mysql.Config{})
+			err = sqlDB.Ping()
+			if err != nil {
+				log.Fatalln(err.Error())
+			}
+
+			driver, _ := mysql.WithInstance(
+				sqlDB, &mysql.Config{},
+			)
 
 			m, err := migrate.NewWithDatabaseInstance(
 				"file://internal/pkg/database/migrations/mysql",
@@ -73,7 +93,7 @@ func Migrate() {
 
 			err = m.Up()
 			if err != nil && err != migrate.ErrNoChange {
-				log.Fatalln(err)
+				log.Fatalln(err.Error())
 			}
 		},
 	)
