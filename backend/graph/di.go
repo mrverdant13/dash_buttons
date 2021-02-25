@@ -36,6 +36,6 @@ func Init() {
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
-	log.Fatal(http.ListenAndServe(":"+graphqlServerPort, nil).Error())
+	log.Fatalln(http.ListenAndServe(":"+graphqlServerPort, nil).Error())
 
 }
