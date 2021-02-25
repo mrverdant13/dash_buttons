@@ -38,12 +38,12 @@ func load(path string) (config appConf) {
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatalln(err.Error())
 	}
 
 	err = viper.Unmarshal(&config)
 	if err != nil {
-		log.Fatal(err.Error())
+		log.Fatalln(err.Error())
 	}
 
 	return config
