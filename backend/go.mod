@@ -9,4 +9,6 @@ require (
 	github.com/golobby/container v1.3.0
 	github.com/spf13/viper v1.7.1
 	github.com/vektah/gqlparser/v2 v2.1.0
+	gorm.io/driver/mysql v1.0.4
+	gorm.io/gorm v1.20.12
 )
