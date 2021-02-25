@@ -7,3 +7,6 @@ db_conf:
   host: 1.2.3.4
   port: 8080
   database: database_name
+
+jwt:
+  secret_key: secret_key
