@@ -17,6 +17,9 @@
 
 
 
+# Debug
+__debug_bin
+
 # VSC
 .vscode
 
