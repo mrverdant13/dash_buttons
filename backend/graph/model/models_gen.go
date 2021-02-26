@@ -7,6 +7,11 @@ type Department struct {
 	Name string `json:"name"`
 }
 
+type Login struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type NewDepartment struct {
 	Name string `json:"name"`
 }

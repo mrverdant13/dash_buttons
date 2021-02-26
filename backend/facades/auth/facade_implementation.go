@@ -8,13 +8,13 @@ import (
 )
 
 type service struct {
-	secretKey string
+	secretKey []byte
 }
 
 // NewService creates a new auth service.
 func NewService(secretKey string) Service {
 	return &service{
-		secretKey: secretKey,
+		secretKey: []byte(secretKey),
 	}
 }
 

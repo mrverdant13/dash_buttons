@@ -12,6 +12,11 @@ type Query {
   departments: [Department!]!
 }
 
+input Login {
+  email: String!
+  password: String!
+}
+
 input NewDepartment {
   name: String!
 }
@@ -24,4 +29,5 @@ input NewUser {
 type Mutation {
   createDepartment(input: NewDepartment!): Department!
   createUser(input: NewUser!): User!
+  login(input: Login!): String!
 }

@@ -58,26 +58,26 @@ func (r *repo) UserWithIDExists(userID uint64) (bool, error) {
 	return result.Error == nil, result.Error
 }
 
-func (r *repo) Authenticate(email, password string) error {
+func (r *repo) Authenticate(loginData model.Login) (uint64, error) {
 	user := User{
-		Email: email,
+		Email: loginData.Email,
 	}
 
 	result := r.gormDB.Where(&user).First(&user)
 	if result.Error != nil {
-		return result.Error
+		return 0, result.Error
 	}
 
 	rightCreds := checkPasswordHash(
-		password,
+		loginData.Password,
 		user.HashedPassword,
 	)
 
 	if rightCreds {
-		return nil
+		return uint64(user.ID), nil
 	}
 
-	return fmt.Errorf("Wrong credentials")
+	return 0, fmt.Errorf("Wrong credentials")
 }
 
 func hashPassword(password string) (string, error) {

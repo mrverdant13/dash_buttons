@@ -18,6 +18,15 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	return r.usersRepo.CreateUser(input)
 }
 
+func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
+	userID, err := r.usersRepo.Authenticate(input)
+	if err != nil {
+		return "", err
+	}
+
+	return r.authService.GenerateToken(userID)
+}
+
 func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, error) {
 	return r.departmentsRepo.GetAll()
 }
