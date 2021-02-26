@@ -29,6 +29,8 @@ func Init() {
 
 	router := chi.NewRouter()
 
+	router.Use(auth.Middleware())
+
 	resolver := NewResolver(
 		departmentsRepo,
 		authService,

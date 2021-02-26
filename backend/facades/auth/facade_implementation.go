@@ -30,7 +30,7 @@ func NewService(
 const (
 	expirationDelta = time.Hour * 24
 
-	usernameKey   = "username"
+	userKey       = "user"
 	expirationKey = "expiration"
 )
 
@@ -41,8 +41,8 @@ func (r *service) CreateUser(newUser model.NewUser) (*model.User, error) {
 	}
 
 	user := User{
-		Email:    newUser.Email,
-		Password: hashedPassword,
+		Email:          newUser.Email,
+		HashedPassword: hashedPassword,
 	}
 
 	result := r.gormDB.Create(
@@ -59,6 +59,7 @@ func (r *service) CreateUser(newUser model.NewUser) (*model.User, error) {
 
 	return &_user, nil
 }
+
 func (r *service) Authenticate(email, password string) (bool, error) {
 	user := User{
 		Email: email,
@@ -69,17 +70,39 @@ func (r *service) Authenticate(email, password string) (bool, error) {
 		return false, result.Error
 	}
 
-	userExists := checkPasswordHash(password, user.Password)
+	userExists := checkPasswordHash(
+		password,
+		user.HashedPassword,
+	)
 
 	return userExists, nil
 }
 
-func (r *service) generateToken(username string) (string, error) {
+func (r *service) GetUserByToken(token string) (*model.User, error) {
+	user, err := r.parseToken(token)
+	if err != nil {
+		return nil, err
+	}
+
+	result := r.gormDB.Where(&user).First(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	_user := model.User{
+		ID:    strconv.FormatInt(int64(user.ID), 10),
+		Email: user.Email,
+	}
+
+	return &_user, nil
+}
+
+func (r *service) generateToken(user User) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
 
-	claims[usernameKey] = username
+	claims[userKey] = user
 	claims[expirationKey] = time.Now().Add(expirationDelta).Unix()
 
 	tokenString, err := token.SignedString(r.secretKey)
@@ -90,7 +113,7 @@ func (r *service) generateToken(username string) (string, error) {
 	return tokenString, nil
 }
 
-func (r *service) parseToken(tokenStr string) (string, error) {
+func (r *service) parseToken(tokenStr string) (*User, error) {
 	token, err := jwt.Parse(
 		tokenStr,
 		func(token *jwt.Token) (interface{}, error) {
@@ -98,17 +121,17 @@ func (r *service) parseToken(tokenStr string) (string, error) {
 		},
 	)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok || !token.Valid {
-		return "", fmt.Errorf("Token parsing error")
+		return nil, fmt.Errorf("Token parsing error")
 	}
 
-	username := claims[usernameKey].(string)
+	user := claims[userKey].(User)
 
-	return username, nil
+	return &user, nil
 }
 
 func hashPassword(password string) (string, error) {
@@ -126,17 +149,4 @@ func checkPasswordHash(password, hash string) bool {
 		[]byte(password),
 	)
 	return err == nil
-}
-
-func (r *service) getUserIDByEmail(email string) (uint64, error) {
-	user := User{
-		Email: email,
-	}
-
-	result := r.gormDB.Where(&user).First(&user)
-	if result.Error != nil {
-		return 0, result.Error
-	}
-
-	return uint64(user.ID), nil
 }
