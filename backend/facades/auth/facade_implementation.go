@@ -26,8 +26,24 @@ const (
 )
 
 func (r *service) GetUserIDByToken(token string) (uint64, error) {
-	return r.parseToken(token)
+	_token, err := jwt.Parse(
+		token,
+		func(token *jwt.Token) (interface{}, error) {
+			return r.secretKey, nil
+		},
+	)
+	if err != nil {
+		return 0, err
+	}
 
+	claims, ok := _token.Claims.(jwt.MapClaims)
+	if !ok || !_token.Valid {
+		return 0, fmt.Errorf("Token parsing error")
+	}
+
+	userID := uint64(claims[userIDKey].(float64))
+
+	return userID, nil
 }
 
 func (r *service) GenerateToken(userID uint64) (string, error) {
@@ -44,25 +60,4 @@ func (r *service) GenerateToken(userID uint64) (string, error) {
 	}
 
 	return tokenString, nil
-}
-
-func (r *service) parseToken(tokenStr string) (uint64, error) {
-	token, err := jwt.Parse(
-		tokenStr,
-		func(token *jwt.Token) (interface{}, error) {
-			return r.secretKey, nil
-		},
-	)
-	if err != nil {
-		return 0, err
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok || !token.Valid {
-		return 0, fmt.Errorf("Token parsing error")
-	}
-
-	userID := uint64(claims[userIDKey].(float64))
-
-	return userID, nil
 }
