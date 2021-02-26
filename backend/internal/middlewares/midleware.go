@@ -53,7 +53,7 @@ func Auth() func(http.Handler) http.Handler {
 				ctx := context.WithValue(
 					r.Context(),
 					userCtxKey,
-					&user,
+					user,
 				)
 
 				r = r.WithContext(ctx)
