@@ -7,13 +7,14 @@ import (
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
+	"github.com/mrverdant13/dash_buttons/backend/graph/model"
 )
 
 const (
-	ctxName = "userId"
+	ctxName = "user"
 )
 
-var userIDCtxKey = &contextKey{ctxName}
+var userCtxKey = &contextKey{ctxName}
 
 type contextKey struct {
 	name string
@@ -43,7 +44,7 @@ func Auth() func(http.Handler) http.Handler {
 					return
 				}
 
-				userExists, err := usersRepo.UserWithIDExists(userID)
+				user, err := usersRepo.GetUserByID(userID)
 				if err != nil {
 					next.ServeHTTP(w, r)
 					return
@@ -51,8 +52,8 @@ func Auth() func(http.Handler) http.Handler {
 
 				ctx := context.WithValue(
 					r.Context(),
-					userIDCtxKey,
-					&userExists,
+					userCtxKey,
+					&user,
 				)
 
 				r = r.WithContext(ctx)
@@ -63,10 +64,10 @@ func Auth() func(http.Handler) http.Handler {
 	}
 }
 
-// ForContext finds the user from the context.
+// CtxUser get the user from the context.
 //
-// REQUIRES Middleware to have run.
-// func ForContext(ctx context.Context) *User {
-// 	raw, _ := ctx.Value(userCtxKey).(*User)
-// 	return raw
-// }
+// REQUIRES the auth middleware to have run.
+func CtxUser(ctx context.Context) *model.User {
+	raw, _ := ctx.Value(userCtxKey).(*model.User)
+	return raw
+}

@@ -46,7 +46,7 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 	return &_user, nil
 }
 
-func (r *repo) UserWithIDExists(userID uint64) (bool, error) {
+func (r *repo) GetUserByID(userID uint64) (*model.User, error) {
 	user := User{
 		Model: gorm.Model{
 			ID: uint(userID),
@@ -55,7 +55,12 @@ func (r *repo) UserWithIDExists(userID uint64) (bool, error) {
 
 	result := r.gormDB.Where(&user).First(&user)
 
-	return result.Error == nil, result.Error
+	_user := model.User{
+		ID:    strconv.FormatInt(int64(user.ID), 10),
+		Email: user.Email,
+	}
+
+	return &_user, result.Error
 }
 
 func (r *repo) Authenticate(loginData model.Login) (uint64, error) {
