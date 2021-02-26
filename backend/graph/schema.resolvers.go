@@ -27,6 +27,15 @@ func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string
 	return r.authService.GenerateToken(userID)
 }
 
+func (r *mutationResolver) RefreshToken(ctx context.Context, expiredToken string) (string, error) {
+	userID, err := r.authService.GetUserIDByToken(expiredToken)
+	if err != nil {
+		return "", err
+	}
+
+	return r.authService.GenerateToken(userID)
+}
+
 func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, error) {
 	return r.departmentsRepo.GetAll()
 }

@@ -30,4 +30,5 @@ type Mutation {
   createDepartment(input: NewDepartment!): Department!
   createUser(input: NewUser!): User!
   login(input: Login!): String!
+  refreshToken(expiredToken: String!): String!
 }
