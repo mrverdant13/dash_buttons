@@ -1,6 +1,7 @@
 package users
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
@@ -57,22 +58,26 @@ func (r *repo) UserWithIDExists(userID uint64) (bool, error) {
 	return result.Error == nil, result.Error
 }
 
-func (r *repo) Authenticate(email, password string) (bool, error) {
+func (r *repo) Authenticate(email, password string) error {
 	user := User{
 		Email: email,
 	}
 
 	result := r.gormDB.Where(&user).First(&user)
 	if result.Error != nil {
-		return false, result.Error
+		return result.Error
 	}
 
-	userExists := checkPasswordHash(
+	rightCreds := checkPasswordHash(
 		password,
 		user.HashedPassword,
 	)
 
-	return userExists, nil
+	if rightCreds {
+		return nil
+	}
+
+	return fmt.Errorf("Wrong credentials")
 }
 
 func hashPassword(password string) (string, error) {
