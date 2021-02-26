@@ -84,6 +84,12 @@ func (r *service) GetUserByToken(token string) (*model.User, error) {
 		return nil, err
 	}
 
+	*user = User{
+		Model: gorm.Model{
+			ID: user.ID,
+		},
+	}
+
 	result := r.gormDB.Where(&user).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
