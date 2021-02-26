@@ -62,7 +62,7 @@ func (r *service) parseToken(tokenStr string) (uint64, error) {
 		return 0, fmt.Errorf("Token parsing error")
 	}
 
-	userID := claims[userIDKey].(uint64)
+	userID := uint64(claims[userIDKey].(float64))
 
 	return userID, nil
 }
