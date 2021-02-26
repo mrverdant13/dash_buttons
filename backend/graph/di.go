@@ -11,6 +11,7 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/config"
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
+	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 )
 
@@ -21,19 +22,23 @@ func Init() {
 
 	graphqlServerPort := graphQLServerConf.PortString()
 
+	var authService auth.Service
+	container.Make(&authService)
+
 	var departmentsRepo departments.Repo
 	container.Make(&departmentsRepo)
 
-	var authService auth.Service
-	container.Make(&authService)
+	var usersRepo users.Repo
+	container.Make(&usersRepo)
 
 	router := chi.NewRouter()
 
 	router.Use(auth.Middleware())
 
 	resolver := NewResolver(
-		departmentsRepo,
 		authService,
+		departmentsRepo,
+		usersRepo,
 	)
 
 	srv := handler.NewDefaultServer(

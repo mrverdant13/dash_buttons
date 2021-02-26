@@ -15,7 +15,7 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.New
 }
 
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	return r.authService.CreateUser(input)
+	return r.usersRepo.CreateUser(input)
 }
 
 func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, error) {

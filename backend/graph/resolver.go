@@ -3,6 +3,7 @@ package graph
 import (
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
+	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 )
 
 // This file will not be regenerated automatically.
@@ -11,17 +12,20 @@ import (
 
 // Resolver implementats schema.graphql
 type Resolver struct {
-	departmentsRepo departments.Repo
 	authService     auth.Service
+	departmentsRepo departments.Repo
+	usersRepo       users.Repo
 }
 
 // NewResolver creates a GraphQL resolver.
 func NewResolver(
-	departmentsRepo departments.Repo,
 	authService auth.Service,
+	departmentsRepo departments.Repo,
+	usersRepo users.Repo,
 ) Resolver {
 	return Resolver{
-		departmentsRepo: departmentsRepo,
 		authService:     authService,
+		departmentsRepo: departmentsRepo,
+		usersRepo:       usersRepo,
 	}
 }
