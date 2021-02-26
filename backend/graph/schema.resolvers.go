@@ -5,12 +5,22 @@ package graph
 
 import (
 	"context"
+	"fmt"
+	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error) {
+	user := middlewares.CtxUser(ctx)
+	if user == nil {
+		err := fmt.Errorf("Access denied")
+		log.Println(err.Error())
+		return nil, err
+	}
+
 	return r.departmentsRepo.Create(input.Name)
 }
 
