@@ -2,6 +2,7 @@ package users
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
@@ -23,6 +24,7 @@ func NewRepo(gormDB *gorm.DB) Repo {
 func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 	hashedPassword, err := hashPassword(newUser.Password)
 	if err != nil {
+		log.Println(err.Error())
 		return nil, err
 	}
 
@@ -35,6 +37,7 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 		&user,
 	)
 	if result.Error != nil {
+		log.Println(result.Error.Error())
 		return nil, result.Error
 	}
 

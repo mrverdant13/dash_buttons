@@ -1,6 +1,7 @@
 package departments
 
 import (
+	"log"
 	"strconv"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
@@ -27,6 +28,7 @@ func (r *repo) Create(name string) (*model.Department, error) {
 		&department,
 	)
 	if result.Error != nil {
+		log.Println(result.Error.Error())
 		return nil, result.Error
 	}
 
@@ -43,6 +45,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 
 	result := r.gormDB.Find(&departments)
 	if result.Error != nil {
+		log.Println(result.Error.Error())
 		return nil, result.Error
 	}
 
