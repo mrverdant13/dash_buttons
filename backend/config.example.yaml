@@ -8,5 +8,5 @@ db_conf:
   port: 8080
   database: database_name
 
-jwt:
+jwt_conf:
   secret_key: secret_key
