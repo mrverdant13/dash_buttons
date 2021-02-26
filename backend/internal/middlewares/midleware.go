@@ -1,29 +1,34 @@
-package auth
+package middlewares
 
 import (
 	"context"
 	"net/http"
 
 	"github.com/golobby/container"
+	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
+	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 )
 
 const (
-	ctxName = "user"
+	ctxName = "userId"
 )
 
-var userCtxKey = &contextKey{ctxName}
+var userIDCtxKey = &contextKey{ctxName}
 
 type contextKey struct {
 	name string
 }
 
-// Middleware is an auth middleware.
-func Middleware() func(http.Handler) http.Handler {
+// Auth is an auth middleware.
+func Auth() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(
 			func(w http.ResponseWriter, r *http.Request) {
-				var authService Service
+				var authService auth.Service
 				container.Make(&authService)
+
+				var usersRepo users.Repo
+				container.Make(&usersRepo)
 
 				token := r.Header.Get("Authorization")
 
@@ -32,7 +37,13 @@ func Middleware() func(http.Handler) http.Handler {
 					return
 				}
 
-				user, err := authService.GetUserByToken(token)
+				userID, err := authService.GetUserIDByToken(token)
+				if err != nil {
+					next.ServeHTTP(w, r)
+					return
+				}
+
+				userExists, err := usersRepo.UserWithIDExists(userID)
 				if err != nil {
 					next.ServeHTTP(w, r)
 					return
@@ -40,8 +51,8 @@ func Middleware() func(http.Handler) http.Handler {
 
 				ctx := context.WithValue(
 					r.Context(),
-					userCtxKey,
-					&user,
+					userIDCtxKey,
+					&userExists,
 				)
 
 				r = r.WithContext(ctx)

@@ -13,6 +13,7 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
+	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
 // Init initializes and runs a GraphQL server.
@@ -33,7 +34,7 @@ func Init() {
 
 	router := chi.NewRouter()
 
-	router.Use(auth.Middleware())
+	router.Use(middlewares.Auth())
 
 	resolver := NewResolver(
 		authService,

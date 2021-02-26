@@ -45,6 +45,36 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 	return &_user, nil
 }
 
+func (r *repo) UserWithIDExists(userID uint64) (bool, error) {
+	user := User{
+		Model: gorm.Model{
+			ID: uint(userID),
+		},
+	}
+
+	result := r.gormDB.Where(&user).First(&user)
+
+	return result.Error == nil, result.Error
+}
+
+func (r *repo) Authenticate(email, password string) (bool, error) {
+	user := User{
+		Email: email,
+	}
+
+	result := r.gormDB.Where(&user).First(&user)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	userExists := checkPasswordHash(
+		password,
+		user.HashedPassword,
+	)
+
+	return userExists, nil
+}
+
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword(
 		[]byte(password),
