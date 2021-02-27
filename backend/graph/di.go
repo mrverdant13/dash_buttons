@@ -11,6 +11,7 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/config"
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
+	"github.com/mrverdant13/dash_buttons/backend/facades/provinces"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
@@ -29,6 +30,9 @@ func Init() {
 	var departmentsRepo departments.Repo
 	container.Make(&departmentsRepo)
 
+	var provincesRepo provinces.Repo
+	container.Make(&provincesRepo)
+
 	var usersRepo users.Repo
 	container.Make(&usersRepo)
 
@@ -39,6 +43,7 @@ func Init() {
 	resolver := NewResolver(
 		authService,
 		departmentsRepo,
+		provincesRepo,
 		usersRepo,
 	)
 

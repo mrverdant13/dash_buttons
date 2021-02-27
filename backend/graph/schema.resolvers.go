@@ -24,6 +24,10 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.New
 	return r.departmentsRepo.Create(input.Name)
 }
 
+func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error) {
+	return r.provincesRepo.Create(input)
+}
+
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	return r.usersRepo.CreateUser(input)
 }
@@ -52,6 +56,14 @@ func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, e
 
 func (r *queryResolver) Department(ctx context.Context, id string) (*model.Department, error) {
 	return r.departmentsRepo.GetByID(id)
+}
+
+func (r *queryResolver) Provinces(ctx context.Context) ([]*model.Province, error) {
+	return r.provincesRepo.GetAll()
+}
+
+func (r *queryResolver) Province(ctx context.Context, id string) (*model.Province, error) {
+	return r.provincesRepo.GetByID(id)
 }
 
 // Mutation returns generated.MutationResolver implementation.
