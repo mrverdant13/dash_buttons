@@ -25,6 +25,13 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.New
 }
 
 func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error) {
+	user := middlewares.CtxUser(ctx)
+	if user == nil {
+		err := fmt.Errorf("Access denied")
+		log.Println(err.Error())
+		return nil, err
+	}
+
 	return r.provincesRepo.Create(input)
 }
 
