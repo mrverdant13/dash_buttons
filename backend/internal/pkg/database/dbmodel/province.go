@@ -1,4 +1,4 @@
-package provinces
+package dbmodel
 
 import "gorm.io/gorm"
 

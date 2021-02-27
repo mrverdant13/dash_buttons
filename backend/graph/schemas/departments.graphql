@@ -1,6 +1,7 @@
 type Department {
   id: ID!
   name: String!
+  provinces: [Province!]! @goField(forceResolver: true)
 }
 
 extend type Query {

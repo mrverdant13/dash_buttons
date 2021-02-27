@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -27,7 +28,7 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 		return nil, err
 	}
 
-	user := User{
+	user := dbmodel.User{
 		Email:          newUser.Email,
 		HashedPassword: hashedPassword,
 	}
@@ -49,7 +50,7 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 }
 
 func (r *repo) GetByID(id uint64) (*model.User, error) {
-	var user User
+	var user dbmodel.User
 
 	result := r.gormDB.First(&user, id)
 	if result.Error != nil {
@@ -66,7 +67,7 @@ func (r *repo) GetByID(id uint64) (*model.User, error) {
 }
 
 func (r *repo) Authenticate(loginData model.Login) (uint64, error) {
-	user := User{
+	user := dbmodel.User{
 		Email: loginData.Email,
 	}
 

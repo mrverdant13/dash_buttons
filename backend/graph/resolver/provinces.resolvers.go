@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
@@ -34,6 +35,10 @@ func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*model
 	return r.provincesRepo.DeleteByID(uint64(id))
 }
 
+func (r *provinceResolver) Districts(ctx context.Context, obj *model.Province) ([]*model.District, error) {
+	return r.districtsRepo.GetAllByProvinceID(uint64(obj.ID))
+}
+
 func (r *queryResolver) Provinces(ctx context.Context) ([]*model.Province, error) {
 	return r.provincesRepo.GetAll()
 }
@@ -41,3 +46,8 @@ func (r *queryResolver) Provinces(ctx context.Context) ([]*model.Province, error
 func (r *queryResolver) Province(ctx context.Context, id int64) (*model.Province, error) {
 	return r.provincesRepo.GetByID(uint64(id))
 }
+
+// Province returns generated.ProvinceResolver implementation.
+func (r *Resolver) Province() generated.ProvinceResolver { return &provinceResolver{r} }
+
+type provinceResolver struct{ *Resolver }

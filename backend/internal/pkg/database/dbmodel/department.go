@@ -1,4 +1,4 @@
-package departments
+package dbmodel
 
 import "gorm.io/gorm"
 

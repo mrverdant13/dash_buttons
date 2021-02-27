@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +20,7 @@ func NewRepo(gormDB *gorm.DB) Repo {
 }
 
 func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department, error) {
-	department := Department{
+	department := dbmodel.Department{
 		Name: newDepartmentData.Name,
 	}
 
@@ -35,7 +36,7 @@ func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department,
 }
 
 func (r *repo) GetByID(id uint64) (*model.Department, error) {
-	var department Department
+	var department dbmodel.Department
 
 	result := r.gormDB.First(&department, id)
 	if result.Error != nil {
@@ -52,7 +53,7 @@ func (r *repo) GetByID(id uint64) (*model.Department, error) {
 }
 
 func (r *repo) GetAll() ([]*model.Department, error) {
-	var departments []*Department
+	var departments []*dbmodel.Department
 
 	result := r.gormDB.Find(&departments)
 	if result.Error != nil {
@@ -73,7 +74,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 }
 
 func (r *repo) DeleteByID(id uint64) (*model.Department, error) {
-	var department Department
+	var department dbmodel.Department
 
 	result := r.gormDB.Delete(&department, id)
 	if result.Error != nil {

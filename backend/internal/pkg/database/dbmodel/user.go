@@ -1,4 +1,4 @@
-package auth
+package dbmodel
 
 import "gorm.io/gorm"
 
@@ -6,5 +6,5 @@ import "gorm.io/gorm"
 type User struct {
 	gorm.Model
 	Email          string
-	HashedPassword string
+	HashedPassword string `gorm:"column:password"`
 }

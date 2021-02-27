@@ -13,6 +13,10 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
+func (r *departmentResolver) Provinces(ctx context.Context, obj *model.Department) ([]*model.Province, error) {
+	return r.provincesRepo.GetAllByDepartmentID(uint64(obj.ID))
+}
+
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
@@ -43,7 +47,11 @@ func (r *queryResolver) Department(ctx context.Context, id int64) (*model.Depart
 	return r.departmentsRepo.GetByID(uint64(id))
 }
 
+// Department returns generated.DepartmentResolver implementation.
+func (r *Resolver) Department() generated.DepartmentResolver { return &departmentResolver{r} }
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+type departmentResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

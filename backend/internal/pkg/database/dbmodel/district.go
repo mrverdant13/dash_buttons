@@ -1,4 +1,4 @@
-package districts
+package dbmodel
 
 import "gorm.io/gorm"
 

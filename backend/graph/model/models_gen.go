@@ -3,14 +3,15 @@
 package model
 
 type Department struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
+	ID        int64       `json:"id"`
+	Name      string      `json:"name"`
+	Provinces []*Province `json:"provinces"`
 }
 
 type District struct {
-	ID       int64     `json:"id"`
-	Name     string    `json:"name"`
-	Province *Province `json:"province"`
+	ID         int64  `json:"id"`
+	ProvinceID int64  `json:"provinceId"`
+	Name       string `json:"name"`
 }
 
 type Login struct {
@@ -38,9 +39,10 @@ type NewUser struct {
 }
 
 type Province struct {
-	ID         int64       `json:"id"`
-	Name       string      `json:"name"`
-	Department *Department `json:"department"`
+	ID           int64       `json:"id"`
+	DepartmentID int64       `json:"departmentId"`
+	Name         string      `json:"name"`
+	Districts    []*District `json:"districts"`
 }
 
 type User struct {

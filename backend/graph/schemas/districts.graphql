@@ -1,7 +1,7 @@
 type District {
   id: ID!
+  provinceId: ID!
   name: String!
-  province: Province!
 }
 
 extend type Query {
