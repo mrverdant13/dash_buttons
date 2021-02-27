@@ -50,6 +50,10 @@ func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, e
 	return r.departmentsRepo.GetAll()
 }
 
+func (r *queryResolver) Department(ctx context.Context, id string) (*model.Department, error) {
+	return r.departmentsRepo.GetByID(id)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
