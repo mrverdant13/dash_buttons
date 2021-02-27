@@ -32,8 +32,20 @@ func (r *repo) Create(name string) (*model.Department, error) {
 		return nil, result.Error
 	}
 
+	return r.GetByID(strconv.FormatInt(int64(department.ID), 10))
+}
+
+func (r *repo) GetByID(id string) (*model.Department, error) {
+	var department Department
+
+	result := r.gormDB.First(&department, id)
+	if result.Error != nil {
+		log.Println(result.Error.Error())
+		return nil, result.Error
+	}
+
 	_department := model.Department{
-		ID:   strconv.FormatInt(int64(department.ID), 10),
+		ID:   id,
 		Name: department.Name,
 	}
 
