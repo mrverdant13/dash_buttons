@@ -50,19 +50,13 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 }
 
 func (r *repo) GetByID(id string) (*model.User, error) {
-	userID, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
+	var user User
 
-	user := User{
-		Model: gorm.Model{
-			ID: uint(userID),
-		},
+	result := r.gormDB.First(&user, id)
+	if result.Error != nil {
+		log.Println(result.Error.Error())
+		return nil, result.Error
 	}
-
-	result := r.gormDB.Where(&user).First(&user)
 
 	_user := model.User{
 		ID:    strconv.FormatInt(int64(user.ID), 10),
