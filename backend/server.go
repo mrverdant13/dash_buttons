@@ -16,7 +16,7 @@ func main() {
 	config.Init(".")
 
 	// Internal
-	database.Init(true)
+	database.Init(database.OrmMigration)
 
 	// Facades
 	auth.Init()

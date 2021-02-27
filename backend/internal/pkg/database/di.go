@@ -8,11 +8,9 @@ import (
 )
 
 // Init creates and injects the "*gorm.DB" for the entire app using the MySQL driver.
-func Init(migrate bool) {
+func Init(migrationPolicy MigrationPolicy) {
 	initMySQLDatabase()
-	if migrate {
-		Migrate()
-	}
+	Migrate(migrationPolicy)
 }
 
 // Dispose frees resources used by instances initialized by "Init".

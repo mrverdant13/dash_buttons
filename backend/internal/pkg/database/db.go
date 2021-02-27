@@ -6,14 +6,15 @@ import (
 	"log"
 	"strconv"
 
-	"github.com/golang-migrate/migrate"
-	"github.com/golang-migrate/migrate/database/mysql"
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/config"
+	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
 	"gorm.io/gorm"
 
 	//
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/database/mysql"
 	_ "github.com/golang-migrate/migrate/source/file"
 	mysqlgorm "gorm.io/driver/mysql"
 )
@@ -64,36 +65,60 @@ func initMySQLDatabase() {
 	)
 }
 
+// MigrationPolicy holds the migration policy type.
+type MigrationPolicy string
+
+const (
+	// NoMigration indicates that migration will not be executed.
+	NoMigration = "none"
+
+	// OrmMigration indicates that migration will be executed by the ORM.
+	OrmMigration = "orm"
+
+	// SQLScriptsMigration indicates that migration will be executed based on SQL scripts.
+	SQLScriptsMigration = "script"
+)
+
 // Migrate uses migration SQL files.
-func Migrate() {
+func Migrate(migrationPolicy MigrationPolicy) {
 	container.Make(
 		func(gormDB *gorm.DB) {
-			sqlDB, err := gormDB.DB()
-			if err != nil {
-				log.Fatalln(err.Error())
-			}
 
-			err = sqlDB.Ping()
-			if err != nil {
-				log.Fatalln(err.Error())
-			}
+			if migrationPolicy == OrmMigration {
+				gormDB.AutoMigrate(
+					&dbmodel.User{},
+					&dbmodel.Department{},
+					&dbmodel.Province{},
+					&dbmodel.District{},
+				)
+			} else if migrationPolicy == SQLScriptsMigration {
+				sqlDB, err := gormDB.DB()
+				if err != nil {
+					log.Fatalln(err.Error())
+				}
 
-			driver, _ := mysql.WithInstance(
-				sqlDB, &mysql.Config{},
-			)
+				err = sqlDB.Ping()
+				if err != nil {
+					log.Fatalln(err.Error())
+				}
 
-			m, err := migrate.NewWithDatabaseInstance(
-				"file://internal/pkg/database/migrations/mysql",
-				mySQLDriver,
-				driver,
-			)
-			if err != nil {
-				log.Fatalln(err.Error())
-			}
+				driver, _ := mysql.WithInstance(
+					sqlDB, &mysql.Config{},
+				)
 
-			err = m.Up()
-			if err != nil && err != migrate.ErrNoChange {
-				log.Fatalln(err.Error())
+				m, err := migrate.NewWithDatabaseInstance(
+					"file://internal/pkg/database/migrations/mysql",
+					mySQLDriver,
+					driver,
+				)
+				if err != nil {
+					log.Fatalln(err.Error())
+				}
+
+				err = m.Up()
+				if err != nil && err != migrate.ErrNoChange {
+					log.Fatalln(err.Error())
+				}
 			}
 		},
 	)
