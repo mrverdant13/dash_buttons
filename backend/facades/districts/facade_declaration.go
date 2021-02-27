@@ -7,4 +7,5 @@ type Repo interface {
 	Create(newDistrictData model.NewDistrict) (*model.District, error)
 	GetByID(id string) (*model.District, error)
 	GetAll() ([]*model.District, error)
+	DeleteByID(id string) (*model.District, error)
 }

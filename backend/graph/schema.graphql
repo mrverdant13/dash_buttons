@@ -57,6 +57,9 @@ type Mutation {
   createDepartment(input: NewDepartment!): Department!
   createProvince(input: NewProvince!): Province!
   createDistrict(input: NewDistrict!): District!
+  deleteDepartment(id: ID!): Department!
+  deleteProvince(id: ID!): Province!
+  deleteDistrict(id: ID!): District!
   createUser(input: NewUser!): User!
   login(input: Login!): String!
   refreshToken(expiredToken: String!): String!

@@ -46,6 +46,39 @@ func (r *mutationResolver) CreateDistrict(ctx context.Context, input model.NewDi
 	return r.districtsRepo.Create(input)
 }
 
+func (r *mutationResolver) DeleteDepartment(ctx context.Context, id string) (*model.Department, error) {
+	user := middlewares.CtxUser(ctx)
+	if user == nil {
+		err := fmt.Errorf("Access denied")
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	return r.departmentsRepo.DeleteByID(id)
+}
+
+func (r *mutationResolver) DeleteProvince(ctx context.Context, id string) (*model.Province, error) {
+	user := middlewares.CtxUser(ctx)
+	if user == nil {
+		err := fmt.Errorf("Access denied")
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	return r.provincesRepo.DeleteByID(id)
+}
+
+func (r *mutationResolver) DeleteDistrict(ctx context.Context, id string) (*model.District, error) {
+	user := middlewares.CtxUser(ctx)
+	if user == nil {
+		err := fmt.Errorf("Access denied")
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	return r.districtsRepo.DeleteByID(id)
+}
+
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	return r.usersRepo.CreateUser(input)
 }

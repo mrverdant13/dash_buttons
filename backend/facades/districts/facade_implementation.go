@@ -99,3 +99,27 @@ func (r *repo) GetAll() ([]*model.District, error) {
 
 	return _districts, nil
 }
+
+func (r *repo) DeleteByID(id string) (*model.District, error) {
+	var district District
+
+	result := r.gormDB.Delete(&district, id)
+	if result.Error != nil {
+		log.Println(result.Error.Error())
+		return nil, result.Error
+	}
+
+	province, err := r.provincesRepo.GetByID(strconv.FormatInt(int64(district.ProvinceID), 10))
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	_district := model.District{
+		ID:       id,
+		Name:     district.Name,
+		Province: province,
+	}
+
+	return &_district, nil
+}

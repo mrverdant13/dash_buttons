@@ -7,4 +7,5 @@ type Repo interface {
 	Create(newDepartmentData model.NewDepartment) (*model.Department, error)
 	GetByID(id string) (*model.Department, error)
 	GetAll() ([]*model.Department, error)
+	DeleteByID(id string) (*model.Department, error)
 }

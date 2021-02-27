@@ -59,6 +59,9 @@ type ComplexityRoot struct {
 		CreateDistrict   func(childComplexity int, input model.NewDistrict) int
 		CreateProvince   func(childComplexity int, input model.NewProvince) int
 		CreateUser       func(childComplexity int, input model.NewUser) int
+		DeleteDepartment func(childComplexity int, id string) int
+		DeleteDistrict   func(childComplexity int, id string) int
+		DeleteProvince   func(childComplexity int, id string) int
 		Login            func(childComplexity int, input model.Login) int
 		RefreshToken     func(childComplexity int, expiredToken string) int
 	}
@@ -88,6 +91,9 @@ type MutationResolver interface {
 	CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error)
 	CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error)
 	CreateDistrict(ctx context.Context, input model.NewDistrict) (*model.District, error)
+	DeleteDepartment(ctx context.Context, id string) (*model.Department, error)
+	DeleteProvince(ctx context.Context, id string) (*model.Province, error)
+	DeleteDistrict(ctx context.Context, id string) (*model.District, error)
 	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
 	Login(ctx context.Context, input model.Login) (string, error)
 	RefreshToken(ctx context.Context, expiredToken string) (string, error)
@@ -198,6 +204,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+
+	case "Mutation.deleteDepartment":
+		if e.complexity.Mutation.DeleteDepartment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteDepartment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteDepartment(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteDistrict":
+		if e.complexity.Mutation.DeleteDistrict == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteDistrict_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteDistrict(childComplexity, args["id"].(string)), true
+
+	case "Mutation.deleteProvince":
+		if e.complexity.Mutation.DeleteProvince == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_deleteProvince_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DeleteProvince(childComplexity, args["id"].(string)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -438,6 +480,9 @@ type Mutation {
   createDepartment(input: NewDepartment!): Department!
   createProvince(input: NewProvince!): Province!
   createDistrict(input: NewDistrict!): District!
+  deleteDepartment(id: ID!): Department!
+  deleteProvince(id: ID!): Province!
+  deleteDistrict(id: ID!): District!
   createUser(input: NewUser!): User!
   login(input: Login!): String!
   refreshToken(expiredToken: String!): String!
@@ -507,6 +552,51 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteDepartment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteDistrict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_deleteProvince_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -923,6 +1013,132 @@ func (ec *executionContext) _Mutation_createDistrict(ctx context.Context, field 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().CreateDistrict(rctx, args["input"].(model.NewDistrict))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.District)
+	fc.Result = res
+	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteDepartment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteDepartment_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteDepartment(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Department)
+	fc.Result = res
+	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteProvince(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteProvince_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteProvince(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Province)
+	fc.Result = res
+	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_deleteDistrict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_deleteDistrict_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DeleteDistrict(rctx, args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2865,6 +3081,21 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createDistrict":
 			out.Values[i] = ec._Mutation_createDistrict(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteDepartment":
+			out.Values[i] = ec._Mutation_deleteDepartment(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteProvince":
+			out.Values[i] = ec._Mutation_deleteProvince(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "deleteDistrict":
+			out.Values[i] = ec._Mutation_deleteDistrict(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

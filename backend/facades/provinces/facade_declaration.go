@@ -7,4 +7,5 @@ type Repo interface {
 	Create(newProvinceData model.NewProvince) (*model.Province, error)
 	GetByID(id string) (*model.Province, error)
 	GetAll() ([]*model.Province, error)
+	DeleteByID(id string) (*model.Province, error)
 }

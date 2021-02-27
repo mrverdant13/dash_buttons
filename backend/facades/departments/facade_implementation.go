@@ -72,3 +72,20 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 
 	return _departments, nil
 }
+
+func (r *repo) DeleteByID(id string) (*model.Department, error) {
+	var department Department
+
+	result := r.gormDB.Delete(&department, id)
+	if result.Error != nil {
+		log.Println(result.Error.Error())
+		return nil, result.Error
+	}
+
+	_department := model.Department{
+		ID:   id,
+		Name: department.Name,
+	}
+
+	return &_department, nil
+}
