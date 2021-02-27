@@ -24,7 +24,7 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.New
 	return r.departmentsRepo.Create(input)
 }
 
-func (r *mutationResolver) DeleteDepartment(ctx context.Context, id string) (*model.Department, error) {
+func (r *mutationResolver) DeleteDepartment(ctx context.Context, id int64) (*model.Department, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -32,15 +32,15 @@ func (r *mutationResolver) DeleteDepartment(ctx context.Context, id string) (*mo
 		return nil, err
 	}
 
-	return r.departmentsRepo.DeleteByID(id)
+	return r.departmentsRepo.DeleteByID(uint64(id))
 }
 
 func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, error) {
 	return r.departmentsRepo.GetAll()
 }
 
-func (r *queryResolver) Department(ctx context.Context, id string) (*model.Department, error) {
-	return r.departmentsRepo.GetByID(id)
+func (r *queryResolver) Department(ctx context.Context, id int64) (*model.Department, error) {
+	return r.departmentsRepo.GetByID(uint64(id))
 }
 
 // Query returns generated.QueryResolver implementation.

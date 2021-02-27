@@ -23,7 +23,7 @@ func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewPr
 	return r.provincesRepo.Create(input)
 }
 
-func (r *mutationResolver) DeleteProvince(ctx context.Context, id string) (*model.Province, error) {
+func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*model.Province, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -31,13 +31,13 @@ func (r *mutationResolver) DeleteProvince(ctx context.Context, id string) (*mode
 		return nil, err
 	}
 
-	return r.provincesRepo.DeleteByID(id)
+	return r.provincesRepo.DeleteByID(uint64(id))
 }
 
 func (r *queryResolver) Provinces(ctx context.Context) ([]*model.Province, error) {
 	return r.provincesRepo.GetAll()
 }
 
-func (r *queryResolver) Province(ctx context.Context, id string) (*model.Province, error) {
-	return r.provincesRepo.GetByID(id)
+func (r *queryResolver) Province(ctx context.Context, id int64) (*model.Province, error) {
+	return r.provincesRepo.GetByID(uint64(id))
 }

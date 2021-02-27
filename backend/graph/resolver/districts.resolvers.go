@@ -23,7 +23,7 @@ func (r *mutationResolver) CreateDistrict(ctx context.Context, input model.NewDi
 	return r.districtsRepo.Create(input)
 }
 
-func (r *mutationResolver) DeleteDistrict(ctx context.Context, id string) (*model.District, error) {
+func (r *mutationResolver) DeleteDistrict(ctx context.Context, id int64) (*model.District, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -31,13 +31,13 @@ func (r *mutationResolver) DeleteDistrict(ctx context.Context, id string) (*mode
 		return nil, err
 	}
 
-	return r.districtsRepo.DeleteByID(id)
+	return r.districtsRepo.DeleteByID(uint64(id))
 }
 
 func (r *queryResolver) Districts(ctx context.Context) ([]*model.District, error) {
 	return r.districtsRepo.GetAll()
 }
 
-func (r *queryResolver) District(ctx context.Context, id string) (*model.District, error) {
-	return r.districtsRepo.GetByID(id)
+func (r *queryResolver) District(ctx context.Context, id int64) (*model.District, error) {
+	return r.districtsRepo.GetByID(uint64(id))
 }

@@ -2,7 +2,6 @@ package provinces
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
@@ -26,15 +25,9 @@ func NewRepo(
 }
 
 func (r *repo) Create(newProvinceData model.NewProvince) (*model.Province, error) {
-	departmentID, err := strconv.ParseUint(newProvinceData.DepartmentID, 10, 64)
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	province := Province{
 		Name:         newProvinceData.Name,
-		DepartmentID: departmentID,
+		DepartmentID: uint64(newProvinceData.DepartmentID),
 	}
 
 	result := r.gormDB.Create(
@@ -45,10 +38,10 @@ func (r *repo) Create(newProvinceData model.NewProvince) (*model.Province, error
 		return nil, result.Error
 	}
 
-	return r.GetByID(strconv.FormatInt(int64(province.ID), 10))
+	return r.GetByID(uint64(province.ID))
 }
 
-func (r *repo) GetByID(id string) (*model.Province, error) {
+func (r *repo) GetByID(id uint64) (*model.Province, error) {
 	var province Province
 
 	result := r.gormDB.First(&province, id)
@@ -57,14 +50,14 @@ func (r *repo) GetByID(id string) (*model.Province, error) {
 		return nil, result.Error
 	}
 
-	department, err := r.departmentsRepo.GetByID(strconv.FormatInt(int64(province.DepartmentID), 10))
+	department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
 	}
 
 	_province := model.Province{
-		ID:         id,
+		ID:         int64(id),
 		Name:       province.Name,
 		Department: department,
 	}
@@ -83,14 +76,14 @@ func (r *repo) GetAll() ([]*model.Province, error) {
 
 	var _provinces []*model.Province
 	for _, province := range provinces {
-		department, err := r.departmentsRepo.GetByID(strconv.FormatInt(int64(province.DepartmentID), 10))
+		department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
 		if err != nil {
 			log.Println(err.Error())
 			return nil, err
 		}
 
 		_province := model.Province{
-			ID:         strconv.FormatInt(int64(province.ID), 10),
+			ID:         int64(province.ID),
 			Name:       province.Name,
 			Department: department,
 		}
@@ -100,7 +93,7 @@ func (r *repo) GetAll() ([]*model.Province, error) {
 	return _provinces, nil
 }
 
-func (r *repo) DeleteByID(id string) (*model.Province, error) {
+func (r *repo) DeleteByID(id uint64) (*model.Province, error) {
 	var province Province
 
 	result := r.gormDB.Delete(&province, id)
@@ -109,14 +102,14 @@ func (r *repo) DeleteByID(id string) (*model.Province, error) {
 		return nil, result.Error
 	}
 
-	department, err := r.departmentsRepo.GetByID(strconv.FormatInt(int64(province.DepartmentID), 10))
+	department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
 	}
 
 	_province := model.Province{
-		ID:         id,
+		ID:         int64(id),
 		Name:       province.Name,
 		Department: department,
 	}

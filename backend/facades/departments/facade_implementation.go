@@ -2,7 +2,6 @@ package departments
 
 import (
 	"log"
-	"strconv"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/model"
 	"gorm.io/gorm"
@@ -32,10 +31,10 @@ func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department,
 		return nil, result.Error
 	}
 
-	return r.GetByID(strconv.FormatInt(int64(department.ID), 10))
+	return r.GetByID(uint64(department.ID))
 }
 
-func (r *repo) GetByID(id string) (*model.Department, error) {
+func (r *repo) GetByID(id uint64) (*model.Department, error) {
 	var department Department
 
 	result := r.gormDB.First(&department, id)
@@ -45,7 +44,7 @@ func (r *repo) GetByID(id string) (*model.Department, error) {
 	}
 
 	_department := model.Department{
-		ID:   id,
+		ID:   int64(id),
 		Name: department.Name,
 	}
 
@@ -64,7 +63,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 	var _departments []*model.Department
 	for _, department := range departments {
 		_department := model.Department{
-			ID:   strconv.FormatInt(int64(department.ID), 10),
+			ID:   int64(department.ID),
 			Name: department.Name,
 		}
 		_departments = append(_departments, &_department)
@@ -73,7 +72,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 	return _departments, nil
 }
 
-func (r *repo) DeleteByID(id string) (*model.Department, error) {
+func (r *repo) DeleteByID(id uint64) (*model.Department, error) {
 	var department Department
 
 	result := r.gormDB.Delete(&department, id)
@@ -83,7 +82,7 @@ func (r *repo) DeleteByID(id string) (*model.Department, error) {
 	}
 
 	_department := model.Department{
-		ID:   id,
+		ID:   int64(id),
 		Name: department.Name,
 	}
 
