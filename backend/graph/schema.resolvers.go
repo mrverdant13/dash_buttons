@@ -21,7 +21,7 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.New
 		return nil, err
 	}
 
-	return r.departmentsRepo.Create(input.Name)
+	return r.departmentsRepo.Create(input)
 }
 
 func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error) {

@@ -19,9 +19,9 @@ func NewRepo(gormDB *gorm.DB) Repo {
 	}
 }
 
-func (r *repo) Create(name string) (*model.Department, error) {
+func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department, error) {
 	department := Department{
-		Name: name,
+		Name: newDepartmentData.Name,
 	}
 
 	result := r.gormDB.Create(
