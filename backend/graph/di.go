@@ -11,6 +11,7 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/config"
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
+	"github.com/mrverdant13/dash_buttons/backend/facades/districts"
 	"github.com/mrverdant13/dash_buttons/backend/facades/provinces"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
@@ -33,6 +34,9 @@ func Init() {
 	var provincesRepo provinces.Repo
 	container.Make(&provincesRepo)
 
+	var districtsRepo districts.Repo
+	container.Make(&districtsRepo)
+
 	var usersRepo users.Repo
 	container.Make(&usersRepo)
 
@@ -44,6 +48,7 @@ func Init() {
 		authService,
 		departmentsRepo,
 		provincesRepo,
+		districtsRepo,
 		usersRepo,
 	)
 

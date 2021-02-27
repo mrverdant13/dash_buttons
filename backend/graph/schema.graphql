@@ -9,6 +9,12 @@ type Province {
   department: Department!
 }
 
+type District {
+  id: ID!
+  name: String!
+  province: Province!
+}
+
 type User {
   id: ID!
   email: String!
@@ -19,6 +25,8 @@ type Query {
   department(id: ID!): Department!
   provinces: [Province!]!
   province(id: ID!): Province!
+  districts: [District!]!
+  district(id: ID!): District!
 }
 
 input Login {
@@ -35,6 +43,11 @@ input NewProvince {
   departmentId: ID!
 }
 
+input NewDistrict {
+  name: String!
+  provinceId: ID!
+}
+
 input NewUser {
   email: String!
   password: String!
@@ -43,6 +56,7 @@ input NewUser {
 type Mutation {
   createDepartment(input: NewDepartment!): Department!
   createProvince(input: NewProvince!): Province!
+  createDistrict(input: NewDistrict!): District!
   createUser(input: NewUser!): User!
   login(input: Login!): String!
   refreshToken(expiredToken: String!): String!

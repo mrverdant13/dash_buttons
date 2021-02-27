@@ -48,8 +48,15 @@ type ComplexityRoot struct {
 		Name func(childComplexity int) int
 	}
 
+	District struct {
+		ID       func(childComplexity int) int
+		Name     func(childComplexity int) int
+		Province func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateDepartment func(childComplexity int, input model.NewDepartment) int
+		CreateDistrict   func(childComplexity int, input model.NewDistrict) int
 		CreateProvince   func(childComplexity int, input model.NewProvince) int
 		CreateUser       func(childComplexity int, input model.NewUser) int
 		Login            func(childComplexity int, input model.Login) int
@@ -65,6 +72,8 @@ type ComplexityRoot struct {
 	Query struct {
 		Department  func(childComplexity int, id string) int
 		Departments func(childComplexity int) int
+		District    func(childComplexity int, id string) int
+		Districts   func(childComplexity int) int
 		Province    func(childComplexity int, id string) int
 		Provinces   func(childComplexity int) int
 	}
@@ -78,6 +87,7 @@ type ComplexityRoot struct {
 type MutationResolver interface {
 	CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error)
 	CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error)
+	CreateDistrict(ctx context.Context, input model.NewDistrict) (*model.District, error)
 	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
 	Login(ctx context.Context, input model.Login) (string, error)
 	RefreshToken(ctx context.Context, expiredToken string) (string, error)
@@ -87,6 +97,8 @@ type QueryResolver interface {
 	Department(ctx context.Context, id string) (*model.Department, error)
 	Provinces(ctx context.Context) ([]*model.Province, error)
 	Province(ctx context.Context, id string) (*model.Province, error)
+	Districts(ctx context.Context) ([]*model.District, error)
+	District(ctx context.Context, id string) (*model.District, error)
 }
 
 type executableSchema struct {
@@ -118,6 +130,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Department.Name(childComplexity), true
 
+	case "District.id":
+		if e.complexity.District.ID == nil {
+			break
+		}
+
+		return e.complexity.District.ID(childComplexity), true
+
+	case "District.name":
+		if e.complexity.District.Name == nil {
+			break
+		}
+
+		return e.complexity.District.Name(childComplexity), true
+
+	case "District.province":
+		if e.complexity.District.Province == nil {
+			break
+		}
+
+		return e.complexity.District.Province(childComplexity), true
+
 	case "Mutation.createDepartment":
 		if e.complexity.Mutation.CreateDepartment == nil {
 			break
@@ -129,6 +162,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateDepartment(childComplexity, args["input"].(model.NewDepartment)), true
+
+	case "Mutation.createDistrict":
+		if e.complexity.Mutation.CreateDistrict == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createDistrict_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateDistrict(childComplexity, args["input"].(model.NewDistrict)), true
 
 	case "Mutation.createProvince":
 		if e.complexity.Mutation.CreateProvince == nil {
@@ -217,6 +262,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Departments(childComplexity), true
+
+	case "Query.district":
+		if e.complexity.Query.District == nil {
+			break
+		}
+
+		args, err := ec.field_Query_district_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.District(childComplexity, args["id"].(string)), true
+
+	case "Query.districts":
+		if e.complexity.Query.Districts == nil {
+			break
+		}
+
+		return e.complexity.Query.Districts(childComplexity), true
 
 	case "Query.province":
 		if e.complexity.Query.Province == nil {
@@ -326,6 +390,12 @@ type Province {
   department: Department!
 }
 
+type District {
+  id: ID!
+  name: String!
+  province: Province!
+}
+
 type User {
   id: ID!
   email: String!
@@ -336,6 +406,8 @@ type Query {
   department(id: ID!): Department!
   provinces: [Province!]!
   province(id: ID!): Province!
+  districts: [District!]!
+  district(id: ID!): District!
 }
 
 input Login {
@@ -352,6 +424,11 @@ input NewProvince {
   departmentId: ID!
 }
 
+input NewDistrict {
+  name: String!
+  provinceId: ID!
+}
+
 input NewUser {
   email: String!
   password: String!
@@ -360,6 +437,7 @@ input NewUser {
 type Mutation {
   createDepartment(input: NewDepartment!): Department!
   createProvince(input: NewProvince!): Province!
+  createDistrict(input: NewDistrict!): District!
   createUser(input: NewUser!): User!
   login(input: Login!): String!
   refreshToken(expiredToken: String!): String!
@@ -379,6 +457,21 @@ func (ec *executionContext) field_Mutation_createDepartment_args(ctx context.Con
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDepartment(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createDistrict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewDistrict
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDistrict(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -463,6 +556,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 }
 
 func (ec *executionContext) field_Query_department_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_district_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -600,6 +708,111 @@ func (ec *executionContext) _Department_name(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _District_id(ctx context.Context, field graphql.CollectedField, obj *model.District) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "District",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNID2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _District_name(ctx context.Context, field graphql.CollectedField, obj *model.District) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "District",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _District_province(ctx context.Context, field graphql.CollectedField, obj *model.District) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "District",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Province, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Province)
+	fc.Result = res
+	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _Mutation_createDepartment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -682,6 +895,48 @@ func (ec *executionContext) _Mutation_createProvince(ctx context.Context, field 
 	res := resTmp.(*model.Province)
 	fc.Result = res
 	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createDistrict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createDistrict_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateDistrict(rctx, args["input"].(model.NewDistrict))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.District)
+	fc.Result = res
+	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1067,6 +1322,83 @@ func (ec *executionContext) _Query_province(ctx context.Context, field graphql.C
 	res := resTmp.(*model.Province)
 	fc.Result = res
 	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_districts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Districts(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]*model.District)
+	fc.Result = res
+	return ec.marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrictᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_district(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_district_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().District(rctx, args["id"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.District)
+	fc.Result = res
+	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2345,6 +2677,34 @@ func (ec *executionContext) unmarshalInputNewDepartment(ctx context.Context, obj
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewDistrict(ctx context.Context, obj interface{}) (model.NewDistrict, error) {
+	var it model.NewDistrict
+	var asMap = obj.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "provinceId":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("provinceId"))
+			it.ProvinceID, err = ec.unmarshalNID2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewProvince(ctx context.Context, obj interface{}) (model.NewProvince, error) {
 	var it model.NewProvince
 	var asMap = obj.(map[string]interface{})
@@ -2441,6 +2801,43 @@ func (ec *executionContext) _Department(ctx context.Context, sel ast.SelectionSe
 	return out
 }
 
+var districtImplementors = []string{"District"}
+
+func (ec *executionContext) _District(ctx context.Context, sel ast.SelectionSet, obj *model.District) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, districtImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("District")
+		case "id":
+			out.Values[i] = ec._District_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "name":
+			out.Values[i] = ec._District_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "province":
+			out.Values[i] = ec._District_province(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -2463,6 +2860,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createProvince":
 			out.Values[i] = ec._Mutation_createProvince(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createDistrict":
+			out.Values[i] = ec._Mutation_createDistrict(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
@@ -2595,6 +2997,34 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_province(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "districts":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_districts(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&invalids, 1)
+				}
+				return res
+			})
+		case "district":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_district(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
@@ -2958,6 +3388,57 @@ func (ec *executionContext) marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋd
 	return ec._Department(ctx, sel, v)
 }
 
+func (ec *executionContext) marshalNDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx context.Context, sel ast.SelectionSet, v model.District) graphql.Marshaler {
+	return ec._District(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrictᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.District) graphql.Marshaler {
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+	return ret
+}
+
+func (ec *executionContext) marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx context.Context, sel ast.SelectionSet, v *model.District) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._District(ctx, sel, v)
+}
+
 func (ec *executionContext) unmarshalNID2string(ctx context.Context, v interface{}) (string, error) {
 	res, err := graphql.UnmarshalID(v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -2980,6 +3461,11 @@ func (ec *executionContext) unmarshalNLogin2githubᚗcomᚋmrverdant13ᚋdash_bu
 
 func (ec *executionContext) unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDepartment(ctx context.Context, v interface{}) (model.NewDepartment, error) {
 	res, err := ec.unmarshalInputNewDepartment(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNNewDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDistrict(ctx context.Context, v interface{}) (model.NewDistrict, error) {
+	res, err := ec.unmarshalInputNewDistrict(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 

@@ -7,6 +7,12 @@ type Department struct {
 	Name string `json:"name"`
 }
 
+type District struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Province *Province `json:"province"`
+}
+
 type Login struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -14,6 +20,11 @@ type Login struct {
 
 type NewDepartment struct {
 	Name string `json:"name"`
+}
+
+type NewDistrict struct {
+	Name       string `json:"name"`
+	ProvinceID string `json:"provinceId"`
 }
 
 type NewProvince struct {

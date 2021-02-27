@@ -3,6 +3,7 @@ package graph
 import (
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
+	"github.com/mrverdant13/dash_buttons/backend/facades/districts"
 	"github.com/mrverdant13/dash_buttons/backend/facades/provinces"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 )
@@ -16,6 +17,7 @@ type Resolver struct {
 	authService     auth.Service
 	departmentsRepo departments.Repo
 	provincesRepo   provinces.Repo
+	districtsRepo   districts.Repo
 	usersRepo       users.Repo
 }
 
@@ -24,12 +26,14 @@ func NewResolver(
 	authService auth.Service,
 	departmentsRepo departments.Repo,
 	provincesRepo provinces.Repo,
+	districtsRepo districts.Repo,
 	usersRepo users.Repo,
 ) Resolver {
 	return Resolver{
 		authService:     authService,
 		departmentsRepo: departmentsRepo,
 		provincesRepo:   provincesRepo,
+		districtsRepo:   districtsRepo,
 		usersRepo:       usersRepo,
 	}
 }

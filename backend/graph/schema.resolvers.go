@@ -35,6 +35,17 @@ func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewPr
 	return r.provincesRepo.Create(input)
 }
 
+func (r *mutationResolver) CreateDistrict(ctx context.Context, input model.NewDistrict) (*model.District, error) {
+	user := middlewares.CtxUser(ctx)
+	if user == nil {
+		err := fmt.Errorf("Access denied")
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	return r.districtsRepo.Create(input)
+}
+
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
 	return r.usersRepo.CreateUser(input)
 }
@@ -71,6 +82,14 @@ func (r *queryResolver) Provinces(ctx context.Context) ([]*model.Province, error
 
 func (r *queryResolver) Province(ctx context.Context, id string) (*model.Province, error) {
 	return r.provincesRepo.GetByID(id)
+}
+
+func (r *queryResolver) Districts(ctx context.Context) ([]*model.District, error) {
+	return r.districtsRepo.GetAll()
+}
+
+func (r *queryResolver) District(ctx context.Context, id string) (*model.District, error) {
+	return r.districtsRepo.GetByID(id)
 }
 
 // Mutation returns generated.MutationResolver implementation.
