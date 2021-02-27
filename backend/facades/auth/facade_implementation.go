@@ -37,11 +37,15 @@ func (r *service) GetUserIDByToken(token string) (string, error) {
 	}
 
 	claims, ok := _token.Claims.(jwt.MapClaims)
+	// TODO: Separate condition.
 	if !ok || !_token.Valid {
 		return "", fmt.Errorf("Token parsing error")
 	}
 
-	userID := claims[userIDKey].(string)
+	userID, ok := claims[userIDKey].(string)
+	if !ok {
+		return "", fmt.Errorf("User ID parsing error")
+	}
 
 	return userID, nil
 }
