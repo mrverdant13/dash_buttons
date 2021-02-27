@@ -10,12 +10,12 @@ import (
 	"github.com/golang-migrate/migrate/database/mysql"
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/config"
-	mysqlgorm "gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
 	//
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/golang-migrate/migrate/source/file"
+	mysqlgorm "gorm.io/driver/mysql"
 )
 
 const (
