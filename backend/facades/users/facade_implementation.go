@@ -49,7 +49,13 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 	return &_user, nil
 }
 
-func (r *repo) GetUserByID(userID uint64) (*model.User, error) {
+func (r *repo) GetByID(id string) (*model.User, error) {
+	userID, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
 	user := User{
 		Model: gorm.Model{
 			ID: uint(userID),
@@ -66,14 +72,14 @@ func (r *repo) GetUserByID(userID uint64) (*model.User, error) {
 	return &_user, result.Error
 }
 
-func (r *repo) Authenticate(loginData model.Login) (uint64, error) {
+func (r *repo) Authenticate(loginData model.Login) (string, error) {
 	user := User{
 		Email: loginData.Email,
 	}
 
 	result := r.gormDB.Where(&user).First(&user)
 	if result.Error != nil {
-		return 0, result.Error
+		return "", result.Error
 	}
 
 	rightCreds := checkPasswordHash(
@@ -82,10 +88,10 @@ func (r *repo) Authenticate(loginData model.Login) (uint64, error) {
 	)
 
 	if rightCreds {
-		return uint64(user.ID), nil
+		return strconv.FormatInt(int64(user.ID), 10), nil
 	}
 
-	return 0, fmt.Errorf("Wrong credentials")
+	return "", fmt.Errorf("Wrong credentials")
 }
 
 func hashPassword(password string) (string, error) {

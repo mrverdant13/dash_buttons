@@ -25,7 +25,7 @@ const (
 	expirationKey = "expiration"
 )
 
-func (r *service) GetUserIDByToken(token string) (uint64, error) {
+func (r *service) GetUserIDByToken(token string) (string, error) {
 	_token, err := jwt.Parse(
 		token,
 		func(token *jwt.Token) (interface{}, error) {
@@ -33,20 +33,20 @@ func (r *service) GetUserIDByToken(token string) (uint64, error) {
 		},
 	)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	claims, ok := _token.Claims.(jwt.MapClaims)
 	if !ok || !_token.Valid {
-		return 0, fmt.Errorf("Token parsing error")
+		return "", fmt.Errorf("Token parsing error")
 	}
 
-	userID := uint64(claims[userIDKey].(float64))
+	userID := claims[userIDKey].(string)
 
 	return userID, nil
 }
 
-func (r *service) GenerateToken(userID uint64) (string, error) {
+func (r *service) GenerateToken(userID string) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)

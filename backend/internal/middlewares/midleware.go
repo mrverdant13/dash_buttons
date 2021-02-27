@@ -44,7 +44,7 @@ func Auth() func(http.Handler) http.Handler {
 					return
 				}
 
-				user, err := usersRepo.GetUserByID(userID)
+				user, err := usersRepo.GetByID(userID)
 				if err != nil {
 					next.ServeHTTP(w, r)
 					return
