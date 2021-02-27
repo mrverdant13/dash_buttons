@@ -44,11 +44,7 @@ func (r *repo) GetByID(id uint64) (*model.Department, error) {
 		return nil, result.Error
 	}
 
-	_department := model.Department{
-		ID:   int64(id),
-		Name: department.Name,
-	}
-
+	_department := department.ToGQL()
 	return &_department, nil
 }
 
@@ -63,10 +59,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 
 	var _departments []*model.Department
 	for _, department := range departments {
-		_department := model.Department{
-			ID:   int64(department.ID),
-			Name: department.Name,
-		}
+		_department := department.ToGQL()
 		_departments = append(_departments, &_department)
 	}
 
@@ -82,10 +75,6 @@ func (r *repo) DeleteByID(id uint64) (*model.Department, error) {
 		return nil, result.Error
 	}
 
-	_department := model.Department{
-		ID:   int64(id),
-		Name: department.Name,
-	}
-
+	_department := department.ToGQL()
 	return &_department, nil
 }
