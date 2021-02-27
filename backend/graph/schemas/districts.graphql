@@ -1,0 +1,20 @@
+type District {
+  id: ID!
+  name: String!
+  province: Province!
+}
+
+extend type Query {
+  districts: [District!]!
+  district(id: ID!): District!
+}
+
+input NewDistrict {
+  name: String!
+  provinceId: ID!
+}
+
+extend type Mutation {
+  createDistrict(input: NewDistrict!): District!
+  deleteDistrict(id: ID!): District!
+}

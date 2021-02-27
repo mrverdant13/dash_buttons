@@ -1,0 +1,9 @@
+input Login {
+  email: String!
+  password: String!
+}
+
+extend type Mutation {
+  login(input: Login!): String!
+  refreshToken(expiredToken: String!): String!
+}

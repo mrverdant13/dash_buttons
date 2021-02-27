@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 import (
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"

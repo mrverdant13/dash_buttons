@@ -1,0 +1,20 @@
+type Province {
+  id: ID!
+  name: String!
+  department: Department!
+}
+
+extend type Query {
+  provinces: [Province!]!
+  province(id: ID!): Province!
+}
+
+input NewProvince {
+  name: String!
+  departmentId: ID!
+}
+
+extend type Mutation {
+  createProvince(input: NewProvince!): Province!
+  deleteProvince(id: ID!): Province!
+}
