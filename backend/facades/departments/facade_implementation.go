@@ -32,6 +32,7 @@ func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department,
 		return nil, result.Error
 	}
 
+	// TODO: Test if "departmen" can be directly returned after conversion.
 	return r.GetByID(uint64(department.ID))
 }
 
@@ -49,7 +50,7 @@ func (r *repo) GetByID(id uint64) (*model.Department, error) {
 }
 
 func (r *repo) GetAll() ([]*model.Department, error) {
-	var departments []*dbmodel.Department
+	var departments dbmodel.Departments
 
 	result := r.gormDB.Find(&departments)
 	if result.Error != nil {
@@ -57,13 +58,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 		return nil, result.Error
 	}
 
-	var _departments []*model.Department
-	for _, department := range departments {
-		_department := department.ToGQL()
-		_departments = append(_departments, &_department)
-	}
-
-	return _departments, nil
+	return departments.ToGQL(), nil
 }
 
 func (r *repo) DeleteByID(id uint64) (*model.Department, error) {

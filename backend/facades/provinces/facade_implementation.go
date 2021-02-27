@@ -39,6 +39,7 @@ func (r *repo) Create(newProvinceData model.NewProvince) (*model.Province, error
 		return nil, result.Error
 	}
 
+	// TODO: Test if "province" can be directly returned after conversion.
 	return r.GetByID(uint64(province.ID))
 }
 
@@ -51,51 +52,16 @@ func (r *repo) GetByID(id uint64) (*model.Province, error) {
 		return nil, result.Error
 	}
 
-	department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-
-	_province := model.Province{
-		ID:           int64(id),
-		Name:         province.Name,
-		DepartmentID: department.ID,
-	}
-
+	_province := province.ToGQL()
 	return &_province, nil
 }
 
 func (r *repo) GetAll() ([]*model.Province, error) {
-	var provinces []*dbmodel.Province
-
-	result := r.gormDB.Find(&provinces)
-	if result.Error != nil {
-		log.Println(result.Error.Error())
-		return nil, result.Error
-	}
-
-	var _provinces []*model.Province
-	for _, province := range provinces {
-		department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
-		if err != nil {
-			log.Println(err.Error())
-			return nil, err
-		}
-
-		_province := model.Province{
-			ID:           int64(province.ID),
-			Name:         province.Name,
-			DepartmentID: department.ID,
-		}
-		_provinces = append(_provinces, &_province)
-	}
-
-	return _provinces, nil
+	return r.GetAllByDepartmentID(0)
 }
 
 func (r *repo) GetAllByDepartmentID(departmentID uint64) ([]*model.Province, error) {
-	var provinces []*dbmodel.Province
+	var provinces dbmodel.Provinces
 
 	result := r.gormDB.Find(&provinces, &dbmodel.Province{DepartmentID: departmentID})
 	if result.Error != nil {
@@ -103,23 +69,7 @@ func (r *repo) GetAllByDepartmentID(departmentID uint64) ([]*model.Province, err
 		return nil, result.Error
 	}
 
-	var _provinces []*model.Province
-	for _, province := range provinces {
-		department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
-		if err != nil {
-			log.Println(err.Error())
-			return nil, err
-		}
-
-		_province := model.Province{
-			ID:           int64(province.ID),
-			Name:         province.Name,
-			DepartmentID: department.ID,
-		}
-		_provinces = append(_provinces, &_province)
-	}
-
-	return _provinces, nil
+	return provinces.ToGQL(), nil
 }
 
 func (r *repo) DeleteByID(id uint64) (*model.Province, error) {
@@ -131,17 +81,6 @@ func (r *repo) DeleteByID(id uint64) (*model.Province, error) {
 		return nil, result.Error
 	}
 
-	department, err := r.departmentsRepo.GetByID(uint64(province.DepartmentID))
-	if err != nil {
-		log.Println(err.Error())
-		return nil, err
-	}
-
-	_province := model.Province{
-		ID:           int64(id),
-		Name:         province.Name,
-		DepartmentID: department.ID,
-	}
-
+	_province := province.ToGQL()
 	return &_province, nil
 }

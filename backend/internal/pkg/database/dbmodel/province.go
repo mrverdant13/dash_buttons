@@ -1,10 +1,37 @@
 package dbmodel
 
-import "gorm.io/gorm"
+import (
+	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"gorm.io/gorm"
+)
 
 // Province is a SQL model.
 type Province struct {
 	gorm.Model
 	Name         string
 	DepartmentID uint64
+}
+
+// ToGQL converts the SQL model to a GraphQL model.
+func (r Province) ToGQL() model.Province {
+	return model.Province{
+		ID:           int64(r.ID),
+		Name:         r.Name,
+		DepartmentID: int64(r.DepartmentID),
+	}
+}
+
+// Provinces is a slice of "Province" SQL models.
+type Provinces []*Province
+
+// ToGQL converts the SQL model to a GraphQL model.
+func (r Provinces) ToGQL() []*model.Province {
+	var _province []*model.Province
+
+	for _, department := range r {
+		_department := department.ToGQL()
+		_province = append(_province, &_department)
+	}
+
+	return _province
 }
