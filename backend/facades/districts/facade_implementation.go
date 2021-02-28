@@ -40,7 +40,7 @@ func (r *repo) Create(newDistrictData gqlmodel.NewDistrict) (*gqlmodel.District,
 	}
 
 	// TODO: Test if "district" can be directly returned after conversion.
-	return r.GetByID(uint64(newDistrictData.ProvinceID))
+	return r.GetByID(uint64(district.ID))
 }
 
 func (r *repo) GetByID(id uint64) (*gqlmodel.District, error) {
