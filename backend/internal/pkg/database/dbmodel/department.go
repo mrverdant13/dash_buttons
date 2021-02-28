@@ -8,7 +8,7 @@ import (
 // Department is a SQL model.
 type Department struct {
 	gorm.Model
-	Name      string
+	Name      string `gorm:"not null;size:25;unique"`
 	Provinces []Province
 }
 

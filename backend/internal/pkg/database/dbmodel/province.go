@@ -8,8 +8,8 @@ import (
 // Province is a SQL model.
 type Province struct {
 	gorm.Model
-	Name         string
-	DepartmentID uint64
+	Name         string `gorm:"not null;uniqueIndex:idx_unique_province;size:50"`
+	DepartmentID uint64 `gorm:"not null;uniqueIndex:idx_unique_province"`
 	Districts    []District
 }
 

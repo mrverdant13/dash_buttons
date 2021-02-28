@@ -5,6 +5,6 @@ import "gorm.io/gorm"
 // User is a SQL model.
 type User struct {
 	gorm.Model
-	Email          string
-	HashedPassword string `gorm:"column:password"`
+	Email          string `gorm:"not null;unique"`
+	HashedPassword string `gorm:"not null;column:password"`
 }

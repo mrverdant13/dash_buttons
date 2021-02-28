@@ -8,8 +8,8 @@ import (
 // District is a SQL model.
 type District struct {
 	gorm.Model
-	Name       string
-	ProvinceID uint64
+	Name       string `gorm:"not null;uniqueIndex:idx_unique_district;size:50"`
+	ProvinceID uint64 `gorm:"not null;uniqueIndex:idx_unique_district"`
 }
 
 // ToGQL converts the SQL model to a GraphQL model.
