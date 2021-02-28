@@ -8,7 +8,8 @@ import (
 // Department is a SQL model.
 type Department struct {
 	gorm.Model
-	Name string
+	Name      string
+	Provinces []Province
 }
 
 // ToGQL converts the SQL model to a GraphQL model.

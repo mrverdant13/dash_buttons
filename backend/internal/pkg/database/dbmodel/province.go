@@ -10,6 +10,7 @@ type Province struct {
 	gorm.Model
 	Name         string
 	DepartmentID uint64
+	Districts    []District
 }
 
 // ToGQL converts the SQL model to a GraphQL model.
