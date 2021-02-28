@@ -7,7 +7,7 @@ import (
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 )
 
 const (
@@ -67,7 +67,7 @@ func Auth() func(http.Handler) http.Handler {
 // CtxUser get the user from the context.
 //
 // REQUIRES the auth middleware to have run.
-func CtxUser(ctx context.Context) *model.User {
-	raw, _ := ctx.Value(userCtxKey).(*model.User)
+func CtxUser(ctx context.Context) *gqlmodel.User {
+	raw, _ := ctx.Value(userCtxKey).(*gqlmodel.User)
 	return raw
 }

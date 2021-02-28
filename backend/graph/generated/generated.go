@@ -12,7 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -58,14 +58,14 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		CreateDepartment func(childComplexity int, input model.NewDepartment) int
-		CreateDistrict   func(childComplexity int, input model.NewDistrict) int
-		CreateProvince   func(childComplexity int, input model.NewProvince) int
-		CreateUser       func(childComplexity int, input model.NewUser) int
+		CreateDepartment func(childComplexity int, input gqlmodel.NewDepartment) int
+		CreateDistrict   func(childComplexity int, input gqlmodel.NewDistrict) int
+		CreateProvince   func(childComplexity int, input gqlmodel.NewProvince) int
+		CreateUser       func(childComplexity int, input gqlmodel.NewUser) int
 		DeleteDepartment func(childComplexity int, id int64) int
 		DeleteDistrict   func(childComplexity int, id int64) int
 		DeleteProvince   func(childComplexity int, id int64) int
-		Login            func(childComplexity int, input model.Login) int
+		Login            func(childComplexity int, input gqlmodel.Login) int
 		RefreshToken     func(childComplexity int, expiredToken string) int
 	}
 
@@ -92,29 +92,29 @@ type ComplexityRoot struct {
 }
 
 type DepartmentResolver interface {
-	Provinces(ctx context.Context, obj *model.Department) ([]*model.Province, error)
+	Provinces(ctx context.Context, obj *gqlmodel.Department) ([]*gqlmodel.Province, error)
 }
 type MutationResolver interface {
-	Login(ctx context.Context, input model.Login) (string, error)
+	Login(ctx context.Context, input gqlmodel.Login) (string, error)
 	RefreshToken(ctx context.Context, expiredToken string) (string, error)
-	CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error)
-	DeleteDepartment(ctx context.Context, id int64) (*model.Department, error)
-	CreateDistrict(ctx context.Context, input model.NewDistrict) (*model.District, error)
-	DeleteDistrict(ctx context.Context, id int64) (*model.District, error)
-	CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error)
-	DeleteProvince(ctx context.Context, id int64) (*model.Province, error)
-	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
+	CreateDepartment(ctx context.Context, input gqlmodel.NewDepartment) (*gqlmodel.Department, error)
+	DeleteDepartment(ctx context.Context, id int64) (*gqlmodel.Department, error)
+	CreateDistrict(ctx context.Context, input gqlmodel.NewDistrict) (*gqlmodel.District, error)
+	DeleteDistrict(ctx context.Context, id int64) (*gqlmodel.District, error)
+	CreateProvince(ctx context.Context, input gqlmodel.NewProvince) (*gqlmodel.Province, error)
+	DeleteProvince(ctx context.Context, id int64) (*gqlmodel.Province, error)
+	CreateUser(ctx context.Context, input gqlmodel.NewUser) (*gqlmodel.User, error)
 }
 type ProvinceResolver interface {
-	Districts(ctx context.Context, obj *model.Province) ([]*model.District, error)
+	Districts(ctx context.Context, obj *gqlmodel.Province) ([]*gqlmodel.District, error)
 }
 type QueryResolver interface {
-	Departments(ctx context.Context) ([]*model.Department, error)
-	Department(ctx context.Context, id int64) (*model.Department, error)
-	Districts(ctx context.Context) ([]*model.District, error)
-	District(ctx context.Context, id int64) (*model.District, error)
-	Provinces(ctx context.Context) ([]*model.Province, error)
-	Province(ctx context.Context, id int64) (*model.Province, error)
+	Departments(ctx context.Context) ([]*gqlmodel.Department, error)
+	Department(ctx context.Context, id int64) (*gqlmodel.Department, error)
+	Districts(ctx context.Context) ([]*gqlmodel.District, error)
+	District(ctx context.Context, id int64) (*gqlmodel.District, error)
+	Provinces(ctx context.Context) ([]*gqlmodel.Province, error)
+	Province(ctx context.Context, id int64) (*gqlmodel.Province, error)
 }
 
 type executableSchema struct {
@@ -184,7 +184,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateDepartment(childComplexity, args["input"].(model.NewDepartment)), true
+		return e.complexity.Mutation.CreateDepartment(childComplexity, args["input"].(gqlmodel.NewDepartment)), true
 
 	case "Mutation.createDistrict":
 		if e.complexity.Mutation.CreateDistrict == nil {
@@ -196,7 +196,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateDistrict(childComplexity, args["input"].(model.NewDistrict)), true
+		return e.complexity.Mutation.CreateDistrict(childComplexity, args["input"].(gqlmodel.NewDistrict)), true
 
 	case "Mutation.createProvince":
 		if e.complexity.Mutation.CreateProvince == nil {
@@ -208,7 +208,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateProvince(childComplexity, args["input"].(model.NewProvince)), true
+		return e.complexity.Mutation.CreateProvince(childComplexity, args["input"].(gqlmodel.NewProvince)), true
 
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
@@ -220,7 +220,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(gqlmodel.NewUser)), true
 
 	case "Mutation.deleteDepartment":
 		if e.complexity.Mutation.DeleteDepartment == nil {
@@ -268,7 +268,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Login(childComplexity, args["input"].(model.Login)), true
+		return e.complexity.Mutation.Login(childComplexity, args["input"].(gqlmodel.Login)), true
 
 	case "Mutation.refreshToken":
 		if e.complexity.Mutation.RefreshToken == nil {
@@ -547,10 +547,10 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 func (ec *executionContext) field_Mutation_createDepartment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewDepartment
+	var arg0 gqlmodel.NewDepartment
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDepartment(ctx, tmp)
+		arg0, err = ec.unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewDepartment(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -562,10 +562,10 @@ func (ec *executionContext) field_Mutation_createDepartment_args(ctx context.Con
 func (ec *executionContext) field_Mutation_createDistrict_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewDistrict
+	var arg0 gqlmodel.NewDistrict
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDistrict(ctx, tmp)
+		arg0, err = ec.unmarshalNNewDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewDistrict(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -577,10 +577,10 @@ func (ec *executionContext) field_Mutation_createDistrict_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_createProvince_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewProvince
+	var arg0 gqlmodel.NewProvince
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewProvince2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewProvince(ctx, tmp)
+		arg0, err = ec.unmarshalNNewProvince2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewProvince(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -592,10 +592,10 @@ func (ec *executionContext) field_Mutation_createProvince_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.NewUser
+	var arg0 gqlmodel.NewUser
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewUser(ctx, tmp)
+		arg0, err = ec.unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewUser(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -652,10 +652,10 @@ func (ec *executionContext) field_Mutation_deleteProvince_args(ctx context.Conte
 func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.Login
+	var arg0 gqlmodel.Login
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNLogin2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐLogin(ctx, tmp)
+		arg0, err = ec.unmarshalNLogin2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐLogin(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -777,7 +777,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Department_id(ctx context.Context, field graphql.CollectedField, obj *model.Department) (ret graphql.Marshaler) {
+func (ec *executionContext) _Department_id(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Department) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -812,7 +812,7 @@ func (ec *executionContext) _Department_id(ctx context.Context, field graphql.Co
 	return ec.marshalNID2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Department_name(ctx context.Context, field graphql.CollectedField, obj *model.Department) (ret graphql.Marshaler) {
+func (ec *executionContext) _Department_name(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Department) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -847,7 +847,7 @@ func (ec *executionContext) _Department_name(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Department_provinces(ctx context.Context, field graphql.CollectedField, obj *model.Department) (ret graphql.Marshaler) {
+func (ec *executionContext) _Department_provinces(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Department) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -877,12 +877,12 @@ func (ec *executionContext) _Department_provinces(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Province)
+	res := resTmp.([]*gqlmodel.Province)
 	fc.Result = res
-	return ec.marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvinceᚄ(ctx, field.Selections, res)
+	return ec.marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvinceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _District_id(ctx context.Context, field graphql.CollectedField, obj *model.District) (ret graphql.Marshaler) {
+func (ec *executionContext) _District_id(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.District) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -917,7 +917,7 @@ func (ec *executionContext) _District_id(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _District_provinceId(ctx context.Context, field graphql.CollectedField, obj *model.District) (ret graphql.Marshaler) {
+func (ec *executionContext) _District_provinceId(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.District) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -952,7 +952,7 @@ func (ec *executionContext) _District_provinceId(ctx context.Context, field grap
 	return ec.marshalNID2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _District_name(ctx context.Context, field graphql.CollectedField, obj *model.District) (ret graphql.Marshaler) {
+func (ec *executionContext) _District_name(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.District) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1012,7 +1012,7 @@ func (ec *executionContext) _Mutation_login(ctx context.Context, field graphql.C
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Login(rctx, args["input"].(model.Login))
+		return ec.resolvers.Mutation().Login(rctx, args["input"].(gqlmodel.Login))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1096,7 +1096,7 @@ func (ec *executionContext) _Mutation_createDepartment(ctx context.Context, fiel
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateDepartment(rctx, args["input"].(model.NewDepartment))
+		return ec.resolvers.Mutation().CreateDepartment(rctx, args["input"].(gqlmodel.NewDepartment))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1108,9 +1108,9 @@ func (ec *executionContext) _Mutation_createDepartment(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Department)
+	res := resTmp.(*gqlmodel.Department)
 	fc.Result = res
-	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx, field.Selections, res)
+	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteDepartment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1150,9 +1150,9 @@ func (ec *executionContext) _Mutation_deleteDepartment(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Department)
+	res := resTmp.(*gqlmodel.Department)
 	fc.Result = res
-	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx, field.Selections, res)
+	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createDistrict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1180,7 +1180,7 @@ func (ec *executionContext) _Mutation_createDistrict(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateDistrict(rctx, args["input"].(model.NewDistrict))
+		return ec.resolvers.Mutation().CreateDistrict(rctx, args["input"].(gqlmodel.NewDistrict))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1192,9 +1192,9 @@ func (ec *executionContext) _Mutation_createDistrict(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.District)
+	res := resTmp.(*gqlmodel.District)
 	fc.Result = res
-	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, field.Selections, res)
+	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrict(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteDistrict(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1234,9 +1234,9 @@ func (ec *executionContext) _Mutation_deleteDistrict(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.District)
+	res := resTmp.(*gqlmodel.District)
 	fc.Result = res
-	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, field.Selections, res)
+	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrict(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createProvince(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1264,7 +1264,7 @@ func (ec *executionContext) _Mutation_createProvince(ctx context.Context, field 
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateProvince(rctx, args["input"].(model.NewProvince))
+		return ec.resolvers.Mutation().CreateProvince(rctx, args["input"].(gqlmodel.NewProvince))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1276,9 +1276,9 @@ func (ec *executionContext) _Mutation_createProvince(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Province)
+	res := resTmp.(*gqlmodel.Province)
 	fc.Result = res
-	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvince(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_deleteProvince(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1318,9 +1318,9 @@ func (ec *executionContext) _Mutation_deleteProvince(ctx context.Context, field 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Province)
+	res := resTmp.(*gqlmodel.Province)
 	fc.Result = res
-	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvince(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1348,7 +1348,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(model.NewUser))
+		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(gqlmodel.NewUser))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1360,12 +1360,12 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.User)
+	res := resTmp.(*gqlmodel.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Province_id(ctx context.Context, field graphql.CollectedField, obj *model.Province) (ret graphql.Marshaler) {
+func (ec *executionContext) _Province_id(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Province) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1400,7 +1400,7 @@ func (ec *executionContext) _Province_id(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Province_departmentId(ctx context.Context, field graphql.CollectedField, obj *model.Province) (ret graphql.Marshaler) {
+func (ec *executionContext) _Province_departmentId(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Province) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1435,7 +1435,7 @@ func (ec *executionContext) _Province_departmentId(ctx context.Context, field gr
 	return ec.marshalNID2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Province_name(ctx context.Context, field graphql.CollectedField, obj *model.Province) (ret graphql.Marshaler) {
+func (ec *executionContext) _Province_name(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Province) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1470,7 +1470,7 @@ func (ec *executionContext) _Province_name(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Province_districts(ctx context.Context, field graphql.CollectedField, obj *model.Province) (ret graphql.Marshaler) {
+func (ec *executionContext) _Province_districts(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.Province) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1500,9 +1500,9 @@ func (ec *executionContext) _Province_districts(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.District)
+	res := resTmp.([]*gqlmodel.District)
 	fc.Result = res
-	return ec.marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrictᚄ(ctx, field.Selections, res)
+	return ec.marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrictᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_departments(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1535,9 +1535,9 @@ func (ec *executionContext) _Query_departments(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Department)
+	res := resTmp.([]*gqlmodel.Department)
 	fc.Result = res
-	return ec.marshalNDepartment2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartmentᚄ(ctx, field.Selections, res)
+	return ec.marshalNDepartment2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartmentᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_department(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1577,9 +1577,9 @@ func (ec *executionContext) _Query_department(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Department)
+	res := resTmp.(*gqlmodel.Department)
 	fc.Result = res
-	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx, field.Selections, res)
+	return ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartment(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_districts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1612,9 +1612,9 @@ func (ec *executionContext) _Query_districts(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.District)
+	res := resTmp.([]*gqlmodel.District)
 	fc.Result = res
-	return ec.marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrictᚄ(ctx, field.Selections, res)
+	return ec.marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrictᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_district(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1654,9 +1654,9 @@ func (ec *executionContext) _Query_district(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.District)
+	res := resTmp.(*gqlmodel.District)
 	fc.Result = res
-	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, field.Selections, res)
+	return ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrict(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_provinces(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1689,9 +1689,9 @@ func (ec *executionContext) _Query_provinces(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Province)
+	res := resTmp.([]*gqlmodel.Province)
 	fc.Result = res
-	return ec.marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvinceᚄ(ctx, field.Selections, res)
+	return ec.marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvinceᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_province(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1731,9 +1731,9 @@ func (ec *executionContext) _Query_province(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Province)
+	res := resTmp.(*gqlmodel.Province)
 	fc.Result = res
-	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, field.Selections, res)
+	return ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvince(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -1807,7 +1807,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1842,7 +1842,7 @@ func (ec *executionContext) _User_id(ctx context.Context, field graphql.Collecte
 	return ec.marshalNID2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+func (ec *executionContext) _User_email(ctx context.Context, field graphql.CollectedField, obj *gqlmodel.User) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -2964,8 +2964,8 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputLogin(ctx context.Context, obj interface{}) (model.Login, error) {
-	var it model.Login
+func (ec *executionContext) unmarshalInputLogin(ctx context.Context, obj interface{}) (gqlmodel.Login, error) {
+	var it gqlmodel.Login
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -2992,8 +2992,8 @@ func (ec *executionContext) unmarshalInputLogin(ctx context.Context, obj interfa
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewDepartment(ctx context.Context, obj interface{}) (model.NewDepartment, error) {
-	var it model.NewDepartment
+func (ec *executionContext) unmarshalInputNewDepartment(ctx context.Context, obj interface{}) (gqlmodel.NewDepartment, error) {
+	var it gqlmodel.NewDepartment
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -3012,8 +3012,8 @@ func (ec *executionContext) unmarshalInputNewDepartment(ctx context.Context, obj
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewDistrict(ctx context.Context, obj interface{}) (model.NewDistrict, error) {
-	var it model.NewDistrict
+func (ec *executionContext) unmarshalInputNewDistrict(ctx context.Context, obj interface{}) (gqlmodel.NewDistrict, error) {
+	var it gqlmodel.NewDistrict
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -3040,8 +3040,8 @@ func (ec *executionContext) unmarshalInputNewDistrict(ctx context.Context, obj i
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewProvince(ctx context.Context, obj interface{}) (model.NewProvince, error) {
-	var it model.NewProvince
+func (ec *executionContext) unmarshalInputNewProvince(ctx context.Context, obj interface{}) (gqlmodel.NewProvince, error) {
+	var it gqlmodel.NewProvince
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -3068,8 +3068,8 @@ func (ec *executionContext) unmarshalInputNewProvince(ctx context.Context, obj i
 	return it, nil
 }
 
-func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (model.NewUser, error) {
-	var it model.NewUser
+func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj interface{}) (gqlmodel.NewUser, error) {
+	var it gqlmodel.NewUser
 	var asMap = obj.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -3106,7 +3106,7 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 var departmentImplementors = []string{"Department"}
 
-func (ec *executionContext) _Department(ctx context.Context, sel ast.SelectionSet, obj *model.Department) graphql.Marshaler {
+func (ec *executionContext) _Department(ctx context.Context, sel ast.SelectionSet, obj *gqlmodel.Department) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, departmentImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -3152,7 +3152,7 @@ func (ec *executionContext) _Department(ctx context.Context, sel ast.SelectionSe
 
 var districtImplementors = []string{"District"}
 
-func (ec *executionContext) _District(ctx context.Context, sel ast.SelectionSet, obj *model.District) graphql.Marshaler {
+func (ec *executionContext) _District(ctx context.Context, sel ast.SelectionSet, obj *gqlmodel.District) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, districtImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -3260,7 +3260,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 var provinceImplementors = []string{"Province"}
 
-func (ec *executionContext) _Province(ctx context.Context, sel ast.SelectionSet, obj *model.Province) graphql.Marshaler {
+func (ec *executionContext) _Province(ctx context.Context, sel ast.SelectionSet, obj *gqlmodel.Province) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, provinceImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -3425,7 +3425,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var userImplementors = []string{"User"}
 
-func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model.User) graphql.Marshaler {
+func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *gqlmodel.User) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, userImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -3715,11 +3715,11 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
-func (ec *executionContext) marshalNDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx context.Context, sel ast.SelectionSet, v model.Department) graphql.Marshaler {
+func (ec *executionContext) marshalNDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartment(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Department) graphql.Marshaler {
 	return ec._Department(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNDepartment2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartmentᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Department) graphql.Marshaler {
+func (ec *executionContext) marshalNDepartment2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartmentᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Department) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3743,7 +3743,7 @@ func (ec *executionContext) marshalNDepartment2ᚕᚖgithubᚗcomᚋmrverdant13�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx, sel, v[i])
+			ret[i] = ec.marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartment(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3756,7 +3756,7 @@ func (ec *executionContext) marshalNDepartment2ᚕᚖgithubᚗcomᚋmrverdant13�
 	return ret
 }
 
-func (ec *executionContext) marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDepartment(ctx context.Context, sel ast.SelectionSet, v *model.Department) graphql.Marshaler {
+func (ec *executionContext) marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDepartment(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Department) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3766,11 +3766,11 @@ func (ec *executionContext) marshalNDepartment2ᚖgithubᚗcomᚋmrverdant13ᚋd
 	return ec._Department(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx context.Context, sel ast.SelectionSet, v model.District) graphql.Marshaler {
+func (ec *executionContext) marshalNDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrict(ctx context.Context, sel ast.SelectionSet, v gqlmodel.District) graphql.Marshaler {
 	return ec._District(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrictᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.District) graphql.Marshaler {
+func (ec *executionContext) marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrictᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.District) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3794,7 +3794,7 @@ func (ec *executionContext) marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx, sel, v[i])
+			ret[i] = ec.marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrict(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3807,7 +3807,7 @@ func (ec *executionContext) marshalNDistrict2ᚕᚖgithubᚗcomᚋmrverdant13ᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐDistrict(ctx context.Context, sel ast.SelectionSet, v *model.District) graphql.Marshaler {
+func (ec *executionContext) marshalNDistrict2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐDistrict(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.District) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3832,36 +3832,36 @@ func (ec *executionContext) marshalNID2int64(ctx context.Context, sel ast.Select
 	return res
 }
 
-func (ec *executionContext) unmarshalNLogin2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐLogin(ctx context.Context, v interface{}) (model.Login, error) {
+func (ec *executionContext) unmarshalNLogin2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐLogin(ctx context.Context, v interface{}) (gqlmodel.Login, error) {
 	res, err := ec.unmarshalInputLogin(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDepartment(ctx context.Context, v interface{}) (model.NewDepartment, error) {
+func (ec *executionContext) unmarshalNNewDepartment2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewDepartment(ctx context.Context, v interface{}) (gqlmodel.NewDepartment, error) {
 	res, err := ec.unmarshalInputNewDepartment(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewDistrict(ctx context.Context, v interface{}) (model.NewDistrict, error) {
+func (ec *executionContext) unmarshalNNewDistrict2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewDistrict(ctx context.Context, v interface{}) (gqlmodel.NewDistrict, error) {
 	res, err := ec.unmarshalInputNewDistrict(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewProvince2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewProvince(ctx context.Context, v interface{}) (model.NewProvince, error) {
+func (ec *executionContext) unmarshalNNewProvince2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewProvince(ctx context.Context, v interface{}) (gqlmodel.NewProvince, error) {
 	res, err := ec.unmarshalInputNewProvince(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
+func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewUser(ctx context.Context, v interface{}) (gqlmodel.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNProvince2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx context.Context, sel ast.SelectionSet, v model.Province) graphql.Marshaler {
+func (ec *executionContext) marshalNProvince2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvince(ctx context.Context, sel ast.SelectionSet, v gqlmodel.Province) graphql.Marshaler {
 	return ec._Province(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvinceᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Province) graphql.Marshaler {
+func (ec *executionContext) marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvinceᚄ(ctx context.Context, sel ast.SelectionSet, v []*gqlmodel.Province) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -3885,7 +3885,7 @@ func (ec *executionContext) marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx, sel, v[i])
+			ret[i] = ec.marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvince(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -3898,7 +3898,7 @@ func (ec *executionContext) marshalNProvince2ᚕᚖgithubᚗcomᚋmrverdant13ᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐProvince(ctx context.Context, sel ast.SelectionSet, v *model.Province) graphql.Marshaler {
+func (ec *executionContext) marshalNProvince2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐProvince(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.Province) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3923,11 +3923,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v gqlmodel.User) graphql.Marshaler {
 	return ec._User(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *gqlmodel.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")

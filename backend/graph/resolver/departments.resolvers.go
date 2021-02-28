@@ -9,15 +9,15 @@ import (
 	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
-func (r *departmentResolver) Provinces(ctx context.Context, obj *model.Department) ([]*model.Province, error) {
+func (r *departmentResolver) Provinces(ctx context.Context, obj *gqlmodel.Department) ([]*gqlmodel.Province, error) {
 	return r.provincesRepo.GetAllByDepartmentID(uint64(obj.ID))
 }
 
-func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.NewDepartment) (*model.Department, error) {
+func (r *mutationResolver) CreateDepartment(ctx context.Context, input gqlmodel.NewDepartment) (*gqlmodel.Department, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -28,7 +28,7 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input model.New
 	return r.departmentsRepo.Create(input)
 }
 
-func (r *mutationResolver) DeleteDepartment(ctx context.Context, id int64) (*model.Department, error) {
+func (r *mutationResolver) DeleteDepartment(ctx context.Context, id int64) (*gqlmodel.Department, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -39,11 +39,11 @@ func (r *mutationResolver) DeleteDepartment(ctx context.Context, id int64) (*mod
 	return r.departmentsRepo.DeleteByID(uint64(id))
 }
 
-func (r *queryResolver) Departments(ctx context.Context) ([]*model.Department, error) {
+func (r *queryResolver) Departments(ctx context.Context) ([]*gqlmodel.Department, error) {
 	return r.departmentsRepo.GetAll()
 }
 
-func (r *queryResolver) Department(ctx context.Context, id int64) (*model.Department, error) {
+func (r *queryResolver) Department(ctx context.Context, id int64) (*gqlmodel.Department, error) {
 	return r.departmentsRepo.GetByID(uint64(id))
 }
 

@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/facades/departments"
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
 	"gorm.io/gorm"
 )
@@ -25,7 +25,7 @@ func NewRepo(
 	}
 }
 
-func (r *repo) Create(newProvinceData model.NewProvince) (*model.Province, error) {
+func (r *repo) Create(newProvinceData gqlmodel.NewProvince) (*gqlmodel.Province, error) {
 	province := dbmodel.Province{
 		Name:         newProvinceData.Name,
 		DepartmentID: uint64(newProvinceData.DepartmentID),
@@ -43,7 +43,7 @@ func (r *repo) Create(newProvinceData model.NewProvince) (*model.Province, error
 	return r.GetByID(uint64(province.ID))
 }
 
-func (r *repo) GetByID(id uint64) (*model.Province, error) {
+func (r *repo) GetByID(id uint64) (*gqlmodel.Province, error) {
 	var province dbmodel.Province
 
 	result := r.gormDB.First(&province, id)
@@ -56,11 +56,11 @@ func (r *repo) GetByID(id uint64) (*model.Province, error) {
 	return &_province, nil
 }
 
-func (r *repo) GetAll() ([]*model.Province, error) {
+func (r *repo) GetAll() ([]*gqlmodel.Province, error) {
 	return r.GetAllByDepartmentID(0)
 }
 
-func (r *repo) GetAllByDepartmentID(departmentID uint64) ([]*model.Province, error) {
+func (r *repo) GetAllByDepartmentID(departmentID uint64) ([]*gqlmodel.Province, error) {
 	var provinces dbmodel.Provinces
 
 	result := r.gormDB.Find(&provinces, &dbmodel.Province{DepartmentID: departmentID})
@@ -72,7 +72,7 @@ func (r *repo) GetAllByDepartmentID(departmentID uint64) ([]*model.Province, err
 	return provinces.ToGQL(), nil
 }
 
-func (r *repo) DeleteByID(id uint64) (*model.Province, error) {
+func (r *repo) DeleteByID(id uint64) (*gqlmodel.Province, error) {
 	var province dbmodel.Province
 
 	result := r.gormDB.Delete(&province, id)

@@ -8,11 +8,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
-func (r *mutationResolver) CreateDistrict(ctx context.Context, input model.NewDistrict) (*model.District, error) {
+func (r *mutationResolver) CreateDistrict(ctx context.Context, input gqlmodel.NewDistrict) (*gqlmodel.District, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -23,7 +23,7 @@ func (r *mutationResolver) CreateDistrict(ctx context.Context, input model.NewDi
 	return r.districtsRepo.Create(input)
 }
 
-func (r *mutationResolver) DeleteDistrict(ctx context.Context, id int64) (*model.District, error) {
+func (r *mutationResolver) DeleteDistrict(ctx context.Context, id int64) (*gqlmodel.District, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -34,10 +34,10 @@ func (r *mutationResolver) DeleteDistrict(ctx context.Context, id int64) (*model
 	return r.districtsRepo.DeleteByID(uint64(id))
 }
 
-func (r *queryResolver) Districts(ctx context.Context) ([]*model.District, error) {
+func (r *queryResolver) Districts(ctx context.Context) ([]*gqlmodel.District, error) {
 	return r.districtsRepo.GetAll()
 }
 
-func (r *queryResolver) District(ctx context.Context, id int64) (*model.District, error) {
+func (r *queryResolver) District(ctx context.Context, id int64) (*gqlmodel.District, error) {
 	return r.districtsRepo.GetByID(uint64(id))
 }

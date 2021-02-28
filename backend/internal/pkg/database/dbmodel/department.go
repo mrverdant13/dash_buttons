@@ -1,7 +1,7 @@
 package dbmodel
 
 import (
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"gorm.io/gorm"
 )
 
@@ -12,8 +12,8 @@ type Department struct {
 }
 
 // ToGQL converts the SQL model to a GraphQL model.
-func (r Department) ToGQL() model.Department {
-	return model.Department{
+func (r Department) ToGQL() gqlmodel.Department {
+	return gqlmodel.Department{
 		ID:   int64(r.ID),
 		Name: r.Name,
 	}
@@ -23,8 +23,8 @@ func (r Department) ToGQL() model.Department {
 type Departments []*Department
 
 // ToGQL converts the SQL model to a GraphQL model.
-func (r Departments) ToGQL() []*model.Department {
-	var _departments []*model.Department
+func (r Departments) ToGQL() []*gqlmodel.Department {
+	var _departments []*gqlmodel.Department
 
 	for _, department := range r {
 		_department := department.ToGQL()

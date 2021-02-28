@@ -9,11 +9,11 @@ import (
 	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
-func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewProvince) (*model.Province, error) {
+func (r *mutationResolver) CreateProvince(ctx context.Context, input gqlmodel.NewProvince) (*gqlmodel.Province, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -24,7 +24,7 @@ func (r *mutationResolver) CreateProvince(ctx context.Context, input model.NewPr
 	return r.provincesRepo.Create(input)
 }
 
-func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*model.Province, error) {
+func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*gqlmodel.Province, error) {
 	user := middlewares.CtxUser(ctx)
 	if user == nil {
 		err := fmt.Errorf("Access denied")
@@ -35,15 +35,15 @@ func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*model
 	return r.provincesRepo.DeleteByID(uint64(id))
 }
 
-func (r *provinceResolver) Districts(ctx context.Context, obj *model.Province) ([]*model.District, error) {
+func (r *provinceResolver) Districts(ctx context.Context, obj *gqlmodel.Province) ([]*gqlmodel.District, error) {
 	return r.districtsRepo.GetAllByProvinceID(uint64(obj.ID))
 }
 
-func (r *queryResolver) Provinces(ctx context.Context) ([]*model.Province, error) {
+func (r *queryResolver) Provinces(ctx context.Context) ([]*gqlmodel.Province, error) {
 	return r.provincesRepo.GetAll()
 }
 
-func (r *queryResolver) Province(ctx context.Context, id int64) (*model.Province, error) {
+func (r *queryResolver) Province(ctx context.Context, id int64) (*gqlmodel.Province, error) {
 	return r.provincesRepo.GetByID(uint64(id))
 }
 

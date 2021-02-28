@@ -1,10 +1,10 @@
 package users
 
-import "github.com/mrverdant13/dash_buttons/backend/graph/model"
+import "github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 
 // Repo manages users.
 type Repo interface {
-	CreateUser(newUser model.NewUser) (*model.User, error)
-	GetByID(id uint64) (*model.User, error)
-	Authenticate(loginData model.Login) (uint64, error)
+	CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error)
+	GetByID(id uint64) (*gqlmodel.User, error)
+	Authenticate(loginData gqlmodel.Login) (uint64, error)
 }

@@ -3,7 +3,7 @@ package departments
 import (
 	"log"
 
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
 	"gorm.io/gorm"
 )
@@ -19,7 +19,7 @@ func NewRepo(gormDB *gorm.DB) Repo {
 	}
 }
 
-func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department, error) {
+func (r *repo) Create(newDepartmentData gqlmodel.NewDepartment) (*gqlmodel.Department, error) {
 	department := dbmodel.Department{
 		Name: newDepartmentData.Name,
 	}
@@ -36,7 +36,7 @@ func (r *repo) Create(newDepartmentData model.NewDepartment) (*model.Department,
 	return r.GetByID(uint64(department.ID))
 }
 
-func (r *repo) GetByID(id uint64) (*model.Department, error) {
+func (r *repo) GetByID(id uint64) (*gqlmodel.Department, error) {
 	var department dbmodel.Department
 
 	result := r.gormDB.First(&department, id)
@@ -49,7 +49,7 @@ func (r *repo) GetByID(id uint64) (*model.Department, error) {
 	return &_department, nil
 }
 
-func (r *repo) GetAll() ([]*model.Department, error) {
+func (r *repo) GetAll() ([]*gqlmodel.Department, error) {
 	var departments dbmodel.Departments
 
 	result := r.gormDB.Find(&departments)
@@ -61,7 +61,7 @@ func (r *repo) GetAll() ([]*model.Department, error) {
 	return departments.ToGQL(), nil
 }
 
-func (r *repo) DeleteByID(id uint64) (*model.Department, error) {
+func (r *repo) DeleteByID(id uint64) (*gqlmodel.Department, error) {
 	var department dbmodel.Department
 
 	result := r.gormDB.Delete(&department, id)

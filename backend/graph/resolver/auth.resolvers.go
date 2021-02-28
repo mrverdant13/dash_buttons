@@ -7,10 +7,10 @@ import (
 	"context"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 )
 
-func (r *mutationResolver) Login(ctx context.Context, input model.Login) (string, error) {
+func (r *mutationResolver) Login(ctx context.Context, input gqlmodel.Login) (string, error) {
 	userID, err := r.usersRepo.Authenticate(input)
 	if err != nil {
 		return "", err

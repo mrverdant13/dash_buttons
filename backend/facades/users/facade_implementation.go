@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -21,7 +21,7 @@ func NewRepo(gormDB *gorm.DB) Repo {
 	}
 }
 
-func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
+func (r *repo) CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error) {
 	hashedPassword, err := hashPassword(newUser.Password)
 	if err != nil {
 		log.Println(err.Error())
@@ -41,7 +41,7 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 		return nil, result.Error
 	}
 
-	_user := model.User{
+	_user := gqlmodel.User{
 		ID:    int64(user.ID),
 		Email: user.Email,
 	}
@@ -49,7 +49,7 @@ func (r *repo) CreateUser(newUser model.NewUser) (*model.User, error) {
 	return &_user, nil
 }
 
-func (r *repo) GetByID(id uint64) (*model.User, error) {
+func (r *repo) GetByID(id uint64) (*gqlmodel.User, error) {
 	var user dbmodel.User
 
 	result := r.gormDB.First(&user, id)
@@ -58,7 +58,7 @@ func (r *repo) GetByID(id uint64) (*model.User, error) {
 		return nil, result.Error
 	}
 
-	_user := model.User{
+	_user := gqlmodel.User{
 		ID:    int64(user.ID),
 		Email: user.Email,
 	}
@@ -66,7 +66,7 @@ func (r *repo) GetByID(id uint64) (*model.User, error) {
 	return &_user, result.Error
 }
 
-func (r *repo) Authenticate(loginData model.Login) (uint64, error) {
+func (r *repo) Authenticate(loginData gqlmodel.Login) (uint64, error) {
 	user := dbmodel.User{
 		Email: loginData.Email,
 	}

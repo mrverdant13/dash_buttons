@@ -6,9 +6,9 @@ package resolver
 import (
 	"context"
 
-	"github.com/mrverdant13/dash_buttons/backend/graph/model"
+	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 )
 
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input gqlmodel.NewUser) (*gqlmodel.User, error) {
 	return r.usersRepo.CreateUser(input)
 }
