@@ -1,21 +1,39 @@
+"Province data."
 type Province {
+  "Province ID."
   id: ID!
+
+  "Parent department ID."
   departmentId: ID!
+
+  "Province name"
   name: String!
+
+  "Province districts. Districts located in the province territory."
   districts: [District!]! @goField(forceResolver: true)
 }
 
 extend type Query {
+  "Obtain all provinces."
   provinces: [Province!]!
+
+  "Obtain a province by its ID."
   province(id: ID!): Province!
 }
 
+"New province data."
 input NewProvince {
+  "New province name."
   name: String!
+
+  "New province parent department ID."
   departmentId: ID!
 }
 
 extend type Mutation {
+  "Create a new province."
   createProvince(input: NewProvince!): Province!
+
+  "Delete province."
   deleteProvince(id: ID!): Province!
 }

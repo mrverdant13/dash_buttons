@@ -1,9 +1,16 @@
+"Login credentials."
 input Login {
+  "User email"
   email: String!
+
+  "User password"
   password: String!
 }
 
 extend type Mutation {
+  "Generate and obtain an access token for the user registered with the provided credentials."
   login(input: Login!): String!
+
+  "Re-generate and obtain an access token for the user previously registered with the provided expired token."
   refreshToken(expiredToken: String!): String!
 }

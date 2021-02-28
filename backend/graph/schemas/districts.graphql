@@ -1,20 +1,36 @@
+"District data."
 type District {
+  "District ID."
   id: ID!
+
+  "Parent province ID."
   provinceId: ID!
+
+  "District name."
   name: String!
 }
 
 extend type Query {
+  "Obtain all districts."
   districts: [District!]!
+
+  "Obtain a district by its ID."
   district(id: ID!): District!
 }
 
+"New district data."
 input NewDistrict {
+  "New district name."
   name: String!
+
+  "New district parent department ID."
   provinceId: ID!
 }
 
 extend type Mutation {
+  "Create a new district."
   createDistrict(input: NewDistrict!): District!
+
+  "Delete district."
   deleteDistrict(id: ID!): District!
 }

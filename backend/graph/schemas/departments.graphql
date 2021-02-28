@@ -1,19 +1,33 @@
+"Department data."
 type Department {
+  "Department ID."
   id: ID!
+
+  "Department name."
   name: String!
+
+  "Department provinces. Provinces located in the department territory."
   provinces: [Province!]! @goField(forceResolver: true)
 }
 
 extend type Query {
+  "Obtain all departments."
   departments: [Department!]!
+
+  "Obtain a department by its ID."
   department(id: ID!): Department!
 }
 
+"New department data."
 input NewDepartment {
+  "New department name."
   name: String!
 }
 
 extend type Mutation {
+  "Create a new department."
   createDepartment(input: NewDepartment!): Department!
+
+  "Delete a department."
   deleteDepartment(id: ID!): Department!
 }

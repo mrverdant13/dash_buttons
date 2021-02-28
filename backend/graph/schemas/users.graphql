@@ -1,13 +1,22 @@
+"User data."
 type User {
+  "User ID."
   id: ID!
+
+  "User email."
   email: String!
 }
 
+"New user data."
 input NewUser {
+  "New user email."
   email: String!
+
+  "New user password."
   password: String!
 }
 
 extend type Mutation {
+  "Create a new user."
   createUser(input: NewUser!): User!
 }

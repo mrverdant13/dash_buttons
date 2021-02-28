@@ -2,50 +2,80 @@
 
 package gqlmodel
 
+// Department data.
 type Department struct {
-	ID        int64       `json:"id"`
-	Name      string      `json:"name"`
+	// Department ID.
+	ID int64 `json:"id"`
+	// Department name.
+	Name string `json:"name"`
+	// Department provinces. Provinces located in the department territory.
 	Provinces []*Province `json:"provinces"`
 }
 
+// District data.
 type District struct {
-	ID         int64  `json:"id"`
-	ProvinceID int64  `json:"provinceId"`
-	Name       string `json:"name"`
-}
-
-type Login struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type NewDepartment struct {
+	// District ID.
+	ID int64 `json:"id"`
+	// Parent province ID.
+	ProvinceID int64 `json:"provinceId"`
+	// District name.
 	Name string `json:"name"`
 }
 
-type NewDistrict struct {
-	Name       string `json:"name"`
-	ProvinceID int64  `json:"provinceId"`
-}
-
-type NewProvince struct {
-	Name         string `json:"name"`
-	DepartmentID int64  `json:"departmentId"`
-}
-
-type NewUser struct {
-	Email    string `json:"email"`
+// Login credentials.
+type Login struct {
+	// User email
+	Email string `json:"email"`
+	// User password
 	Password string `json:"password"`
 }
 
-type Province struct {
-	ID           int64       `json:"id"`
-	DepartmentID int64       `json:"departmentId"`
-	Name         string      `json:"name"`
-	Districts    []*District `json:"districts"`
+// New department data.
+type NewDepartment struct {
+	// New department name.
+	Name string `json:"name"`
 }
 
+// New district data.
+type NewDistrict struct {
+	// New district name.
+	Name string `json:"name"`
+	// New district parent department ID.
+	ProvinceID int64 `json:"provinceId"`
+}
+
+// New province data.
+type NewProvince struct {
+	// New province name.
+	Name string `json:"name"`
+	// New province parent department ID.
+	DepartmentID int64 `json:"departmentId"`
+}
+
+// New user data.
+type NewUser struct {
+	// New user email.
+	Email string `json:"email"`
+	// New user password.
+	Password string `json:"password"`
+}
+
+// Province data.
+type Province struct {
+	// Province ID.
+	ID int64 `json:"id"`
+	// Parent department ID.
+	DepartmentID int64 `json:"departmentId"`
+	// Province name
+	Name string `json:"name"`
+	// Province districts. Districts located in the province territory.
+	Districts []*District `json:"districts"`
+}
+
+// User data.
 type User struct {
-	ID    int64  `json:"id"`
+	// User ID.
+	ID int64 `json:"id"`
+	// User email.
 	Email string `json:"email"`
 }

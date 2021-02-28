@@ -450,90 +450,154 @@ var sources = []*ast.Source{
   name: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 `, BuiltIn: false},
-	{Name: "graph/schemas/auth.graphql", Input: `input Login {
+	{Name: "graph/schemas/auth.graphql", Input: `"Login credentials."
+input Login {
+  "User email"
   email: String!
+
+  "User password"
   password: String!
 }
 
 extend type Mutation {
+  "Generate and obtain an access token for the user registered with the provided credentials."
   login(input: Login!): String!
+
+  "Re-generate and obtain an access token for the user previously registered with the provided expired token."
   refreshToken(expiredToken: String!): String!
 }
 `, BuiltIn: false},
-	{Name: "graph/schemas/departments.graphql", Input: `type Department {
+	{Name: "graph/schemas/departments.graphql", Input: `"Department data."
+type Department {
+  "Department ID."
   id: ID!
+
+  "Department name."
   name: String!
+
+  "Department provinces. Provinces located in the department territory."
   provinces: [Province!]! @goField(forceResolver: true)
 }
 
 extend type Query {
+  "Obtain all departments."
   departments: [Department!]!
+
+  "Obtain a department by its ID."
   department(id: ID!): Department!
 }
 
+"New department data."
 input NewDepartment {
+  "New department name."
   name: String!
 }
 
 extend type Mutation {
+  "Create a new department."
   createDepartment(input: NewDepartment!): Department!
+
+  "Delete a department."
   deleteDepartment(id: ID!): Department!
 }
 `, BuiltIn: false},
-	{Name: "graph/schemas/districts.graphql", Input: `type District {
+	{Name: "graph/schemas/districts.graphql", Input: `"District data."
+type District {
+  "District ID."
   id: ID!
+
+  "Parent province ID."
   provinceId: ID!
+
+  "District name."
   name: String!
 }
 
 extend type Query {
+  "Obtain all districts."
   districts: [District!]!
+
+  "Obtain a district by its ID."
   district(id: ID!): District!
 }
 
+"New district data."
 input NewDistrict {
+  "New district name."
   name: String!
+
+  "New district parent department ID."
   provinceId: ID!
 }
 
 extend type Mutation {
+  "Create a new district."
   createDistrict(input: NewDistrict!): District!
+
+  "Delete district."
   deleteDistrict(id: ID!): District!
 }
 `, BuiltIn: false},
-	{Name: "graph/schemas/provinces.graphql", Input: `type Province {
+	{Name: "graph/schemas/provinces.graphql", Input: `"Province data."
+type Province {
+  "Province ID."
   id: ID!
+
+  "Parent department ID."
   departmentId: ID!
+
+  "Province name"
   name: String!
+
+  "Province districts. Districts located in the province territory."
   districts: [District!]! @goField(forceResolver: true)
 }
 
 extend type Query {
+  "Obtain all provinces."
   provinces: [Province!]!
+
+  "Obtain a province by its ID."
   province(id: ID!): Province!
 }
 
+"New province data."
 input NewProvince {
+  "New province name."
   name: String!
+
+  "New province parent department ID."
   departmentId: ID!
 }
 
 extend type Mutation {
+  "Create a new province."
   createProvince(input: NewProvince!): Province!
+
+  "Delete province."
   deleteProvince(id: ID!): Province!
 }
 `, BuiltIn: false},
-	{Name: "graph/schemas/users.graphql", Input: `type User {
+	{Name: "graph/schemas/users.graphql", Input: `"User data."
+type User {
+  "User ID."
   id: ID!
+
+  "User email."
   email: String!
 }
 
+"New user data."
 input NewUser {
+  "New user email."
   email: String!
+
+  "New user password."
   password: String!
 }
 
 extend type Mutation {
+  "Create a new user."
   createUser(input: NewUser!): User!
 }
 `, BuiltIn: false},
