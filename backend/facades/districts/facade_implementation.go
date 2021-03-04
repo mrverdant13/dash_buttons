@@ -5,7 +5,7 @@ import (
 
 	"github.com/mrverdant13/dash_buttons/backend/facades/provinces"
 	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
-	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
+	"github.com/mrverdant13/dash_buttons/backend/internal/database/dbmodel"
 	"gorm.io/gorm"
 )
 

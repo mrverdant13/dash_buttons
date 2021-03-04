@@ -8,7 +8,7 @@ import (
 
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/config"
-	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database/dbmodel"
+	"github.com/mrverdant13/dash_buttons/backend/internal/database/dbmodel"
 	"gorm.io/gorm"
 
 	//
@@ -107,7 +107,7 @@ func Migrate(migrationPolicy MigrationPolicy) {
 				)
 
 				m, err := migrate.NewWithDatabaseInstance(
-					"file://internal/pkg/database/migrations/mysql",
+					"file://internal/database/migrations/mysql",
 					mySQLDriver,
 					driver,
 				)

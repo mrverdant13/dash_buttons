@@ -8,7 +8,7 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/facades/provinces"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
 	"github.com/mrverdant13/dash_buttons/backend/graph"
-	"github.com/mrverdant13/dash_buttons/backend/internal/pkg/database"
+	"github.com/mrverdant13/dash_buttons/backend/internal/database"
 )
 
 func main() {
