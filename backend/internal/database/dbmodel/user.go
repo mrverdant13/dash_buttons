@@ -7,4 +7,5 @@ type User struct {
 	gorm.Model
 	Email          string `gorm:"not null;unique"`
 	HashedPassword string `gorm:"not null;column:password"`
+	IsAdmin        bool   `gorm:"not null"`
 }
