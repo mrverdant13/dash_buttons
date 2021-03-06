@@ -85,12 +85,15 @@ func Migrate(migrationPolicy MigrationPolicy) {
 		func(gormDB *gorm.DB) {
 
 			if migrationPolicy == OrmMigration {
-				gormDB.AutoMigrate(
+				err := gormDB.AutoMigrate(
 					&dbmodel.User{},
 					&dbmodel.Department{},
 					&dbmodel.Province{},
 					&dbmodel.District{},
 				)
+				if err != nil {
+					log.Fatalln(err.Error())
+				}
 			} else if migrationPolicy == SQLScriptsMigration {
 				sqlDB, err := gormDB.DB()
 				if err != nil {
