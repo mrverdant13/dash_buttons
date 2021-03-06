@@ -6,7 +6,7 @@ import (
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
 	"github.com/mrverdant13/dash_buttons/backend/internal/database/dbmodel"
-	"golang.org/x/crypto/bcrypt"
+	"github.com/mrverdant13/dash_buttons/backend/utilities"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,7 @@ func NewRepo(gormDB *gorm.DB) Repo {
 }
 
 func (r *repo) CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error) {
-	hashedPassword, err := hashPassword(newUser.Password)
+	hashedPassword, err := utilities.HashPassword(newUser.Password)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
@@ -76,7 +76,7 @@ func (r *repo) Authenticate(loginData gqlmodel.Login) (uint64, error) {
 		return 0, result.Error
 	}
 
-	rightCreds := checkPasswordHash(
+	rightCreds := utilities.CheckPasswordHash(
 		loginData.Password,
 		user.HashedPassword,
 	)
@@ -86,21 +86,4 @@ func (r *repo) Authenticate(loginData gqlmodel.Login) (uint64, error) {
 	}
 
 	return 0, fmt.Errorf("Wrong credentials")
-}
-
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword(
-		[]byte(password),
-		14,
-	)
-
-	return string(bytes), err
-}
-
-func checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword(
-		[]byte(hash),
-		[]byte(password),
-	)
-	return err == nil
 }
