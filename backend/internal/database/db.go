@@ -6,6 +6,8 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/golang-migrate/migrate"
+	"github.com/golang-migrate/migrate/database/mysql"
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/config"
 	"github.com/mrverdant13/dash_buttons/backend/internal/database/dbmodel"
@@ -13,8 +15,6 @@ import (
 
 	//
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate"
-	"github.com/golang-migrate/migrate/database/mysql"
 	_ "github.com/golang-migrate/migrate/source/file"
 	mysqlgorm "gorm.io/driver/mysql"
 )
