@@ -23,7 +23,7 @@ func main() {
 	departments.Init()
 	provinces.Init()
 	districts.Init()
-	users.Init()
+	users.Init(true)
 
 	// GraphQL
 	graph.Init()
