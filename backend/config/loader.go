@@ -23,6 +23,10 @@ func Init(path string) {
 		return config.DbConf
 	})
 
+	container.Singleton(func() AdminUser {
+		return config.AdminUser
+	})
+
 	container.Singleton(func() JWTConf {
 		return config.JWTConf
 	})

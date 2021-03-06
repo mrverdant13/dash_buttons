@@ -8,5 +8,9 @@ db_conf:
   port: 8080
   database: database_name
 
+admin_user:
+  email: admin@email.com
+  password: admin_password
+
 jwt_conf:
   secret_key: secret_key
