@@ -5,32 +5,15 @@ package resolver
 
 import (
 	"context"
-	"fmt"
-	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
-	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
 func (r *mutationResolver) CreateDistrict(ctx context.Context, input gqlmodel.NewDistrict) (*gqlmodel.District, error) {
-	adminUser := middlewares.CtxAdminUser(ctx)
-	if adminUser == nil {
-		err := fmt.Errorf("Access denied")
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	return r.districtsRepo.Create(input)
 }
 
 func (r *mutationResolver) DeleteDistrict(ctx context.Context, id int64) (*gqlmodel.District, error) {
-	adminUser := middlewares.CtxAdminUser(ctx)
-	if adminUser == nil {
-		err := fmt.Errorf("Access denied")
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	return r.districtsRepo.DeleteByID(uint64(id))
 }
 

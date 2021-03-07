@@ -29,8 +29,8 @@ input NewDistrict {
 
 extend type Mutation {
   "Create a new district."
-  createDistrict(input: NewDistrict!): District!
+  createDistrict(input: NewDistrict!): District! @adminAction
 
   "Delete district."
-  deleteDistrict(id: ID!): District!
+  deleteDistrict(id: ID!): District! @adminAction
 }

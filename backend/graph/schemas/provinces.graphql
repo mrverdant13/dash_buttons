@@ -32,8 +32,8 @@ input NewProvince {
 
 extend type Mutation {
   "Create a new province."
-  createProvince(input: NewProvince!): Province!
+  createProvince(input: NewProvince!): Province! @adminAction
 
   "Delete province."
-  deleteProvince(id: ID!): Province!
+  deleteProvince(id: ID!): Province! @adminAction
 }

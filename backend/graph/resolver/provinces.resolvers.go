@@ -5,33 +5,16 @@ package resolver
 
 import (
 	"context"
-	"fmt"
-	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
-	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
 func (r *mutationResolver) CreateProvince(ctx context.Context, input gqlmodel.NewProvince) (*gqlmodel.Province, error) {
-	adminUser := middlewares.CtxAdminUser(ctx)
-	if adminUser == nil {
-		err := fmt.Errorf("Access denied")
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	return r.provincesRepo.Create(input)
 }
 
 func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*gqlmodel.Province, error) {
-	adminUser := middlewares.CtxAdminUser(ctx)
-	if adminUser == nil {
-		err := fmt.Errorf("Access denied")
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	return r.provincesRepo.DeleteByID(uint64(id))
 }
 

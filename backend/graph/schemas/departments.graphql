@@ -26,8 +26,8 @@ input NewDepartment {
 
 extend type Mutation {
   "Create a new department."
-  createDepartment(input: NewDepartment!): Department!
+  createDepartment(input: NewDepartment!): Department! @adminAction
 
   "Delete a department."
-  deleteDepartment(id: ID!): Department!
+  deleteDepartment(id: ID!): Department! @adminAction
 }

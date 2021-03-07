@@ -14,6 +14,7 @@ import (
 	"github.com/mrverdant13/dash_buttons/backend/facades/districts"
 	"github.com/mrverdant13/dash_buttons/backend/facades/provinces"
 	"github.com/mrverdant13/dash_buttons/backend/facades/users"
+	"github.com/mrverdant13/dash_buttons/backend/graph/directives"
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 	"github.com/mrverdant13/dash_buttons/backend/graph/resolver"
 	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
@@ -53,10 +54,13 @@ func Init() {
 		usersRepo,
 	)
 
+	directives := directives.NewDirectives()
+
 	srv := handler.NewDefaultServer(
 		generated.NewExecutableSchema(
 			generated.Config{
-				Resolvers: &resolver,
+				Resolvers:  &resolver,
+				Directives: directives,
 			},
 		),
 	)

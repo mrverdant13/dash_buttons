@@ -5,12 +5,9 @@ package resolver
 
 import (
 	"context"
-	"fmt"
-	"log"
 
 	"github.com/mrverdant13/dash_buttons/backend/graph/generated"
 	"github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel"
-	"github.com/mrverdant13/dash_buttons/backend/internal/middlewares"
 )
 
 func (r *departmentResolver) Provinces(ctx context.Context, obj *gqlmodel.Department) ([]*gqlmodel.Province, error) {
@@ -18,24 +15,10 @@ func (r *departmentResolver) Provinces(ctx context.Context, obj *gqlmodel.Depart
 }
 
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input gqlmodel.NewDepartment) (*gqlmodel.Department, error) {
-	adminUser := middlewares.CtxAdminUser(ctx)
-	if adminUser == nil {
-		err := fmt.Errorf("Access denied")
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	return r.departmentsRepo.Create(input)
 }
 
 func (r *mutationResolver) DeleteDepartment(ctx context.Context, id int64) (*gqlmodel.Department, error) {
-	adminUser := middlewares.CtxAdminUser(ctx)
-	if adminUser == nil {
-		err := fmt.Errorf("Access denied")
-		log.Println(err.Error())
-		return nil, err
-	}
-
 	return r.departmentsRepo.DeleteByID(uint64(id))
 }
 

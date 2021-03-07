@@ -6,6 +6,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -506,10 +507,10 @@ input NewDepartment {
 
 extend type Mutation {
   "Create a new department."
-  createDepartment(input: NewDepartment!): Department!
+  createDepartment(input: NewDepartment!): Department! @adminAction
 
   "Delete a department."
-  deleteDepartment(id: ID!): Department!
+  deleteDepartment(id: ID!): Department! @adminAction
 }
 `, BuiltIn: false},
 	{Name: "graph/schemas/districts.graphql", Input: `"District data."
@@ -543,10 +544,10 @@ input NewDistrict {
 
 extend type Mutation {
   "Create a new district."
-  createDistrict(input: NewDistrict!): District!
+  createDistrict(input: NewDistrict!): District! @adminAction
 
   "Delete district."
-  deleteDistrict(id: ID!): District!
+  deleteDistrict(id: ID!): District! @adminAction
 }
 `, BuiltIn: false},
 	{Name: "graph/schemas/provinces.graphql", Input: `"Province data."
@@ -583,10 +584,10 @@ input NewProvince {
 
 extend type Mutation {
   "Create a new province."
-  createProvince(input: NewProvince!): Province!
+  createProvince(input: NewProvince!): Province! @adminAction
 
   "Delete province."
-  deleteProvince(id: ID!): Province!
+  deleteProvince(id: ID!): Province! @adminAction
 }
 `, BuiltIn: false},
 	{Name: "graph/schemas/users.graphql", Input: `"User data."
@@ -1176,8 +1177,28 @@ func (ec *executionContext) _Mutation_createDepartment(ctx context.Context, fiel
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateDepartment(rctx, args["input"].(gqlmodel.NewDepartment))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().CreateDepartment(rctx, args["input"].(gqlmodel.NewDepartment))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.Department); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.Department`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1218,8 +1239,28 @@ func (ec *executionContext) _Mutation_deleteDepartment(ctx context.Context, fiel
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteDepartment(rctx, args["id"].(int64))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().DeleteDepartment(rctx, args["id"].(int64))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.Department); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.Department`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1260,8 +1301,28 @@ func (ec *executionContext) _Mutation_createDistrict(ctx context.Context, field 
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateDistrict(rctx, args["input"].(gqlmodel.NewDistrict))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().CreateDistrict(rctx, args["input"].(gqlmodel.NewDistrict))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.District); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.District`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1302,8 +1363,28 @@ func (ec *executionContext) _Mutation_deleteDistrict(ctx context.Context, field 
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteDistrict(rctx, args["id"].(int64))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().DeleteDistrict(rctx, args["id"].(int64))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.District); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.District`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1344,8 +1425,28 @@ func (ec *executionContext) _Mutation_createProvince(ctx context.Context, field 
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateProvince(rctx, args["input"].(gqlmodel.NewProvince))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().CreateProvince(rctx, args["input"].(gqlmodel.NewProvince))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.Province); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.Province`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1386,8 +1487,28 @@ func (ec *executionContext) _Mutation_deleteProvince(ctx context.Context, field 
 	}
 	fc.Args = args
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteProvince(rctx, args["id"].(int64))
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().DeleteProvince(rctx, args["id"].(int64))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.Province); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.Province`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
