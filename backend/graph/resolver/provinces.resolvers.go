@@ -14,8 +14,8 @@ import (
 )
 
 func (r *mutationResolver) CreateProvince(ctx context.Context, input gqlmodel.NewProvince) (*gqlmodel.Province, error) {
-	user := middlewares.CtxUser(ctx)
-	if user == nil {
+	adminUser := middlewares.CtxAdminUser(ctx)
+	if adminUser == nil {
 		err := fmt.Errorf("Access denied")
 		log.Println(err.Error())
 		return nil, err
@@ -25,8 +25,8 @@ func (r *mutationResolver) CreateProvince(ctx context.Context, input gqlmodel.Ne
 }
 
 func (r *mutationResolver) DeleteProvince(ctx context.Context, id int64) (*gqlmodel.Province, error) {
-	user := middlewares.CtxUser(ctx)
-	if user == nil {
+	adminUser := middlewares.CtxAdminUser(ctx)
+	if adminUser == nil {
 		err := fmt.Errorf("Access denied")
 		log.Println(err.Error())
 		return nil, err
