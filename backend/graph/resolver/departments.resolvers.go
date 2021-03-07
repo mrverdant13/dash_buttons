@@ -18,8 +18,8 @@ func (r *departmentResolver) Provinces(ctx context.Context, obj *gqlmodel.Depart
 }
 
 func (r *mutationResolver) CreateDepartment(ctx context.Context, input gqlmodel.NewDepartment) (*gqlmodel.Department, error) {
-	user := middlewares.CtxUser(ctx)
-	if user == nil {
+	adminUser := middlewares.CtxAdminUser(ctx)
+	if adminUser == nil {
 		err := fmt.Errorf("Access denied")
 		log.Println(err.Error())
 		return nil, err
@@ -29,8 +29,8 @@ func (r *mutationResolver) CreateDepartment(ctx context.Context, input gqlmodel.
 }
 
 func (r *mutationResolver) DeleteDepartment(ctx context.Context, id int64) (*gqlmodel.Department, error) {
-	user := middlewares.CtxUser(ctx)
-	if user == nil {
+	adminUser := middlewares.CtxAdminUser(ctx)
+	if adminUser == nil {
 		err := fmt.Errorf("Access denied")
 		log.Println(err.Error())
 		return nil, err
