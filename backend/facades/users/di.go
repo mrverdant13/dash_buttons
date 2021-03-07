@@ -11,25 +11,26 @@ import (
 )
 
 // Init creates and injects the an users repo.
-func Init(createRootAdmin bool) {
+func Init(createAdminIfNone bool) {
 	container.Singleton(
 		func(
 			gormDB *gorm.DB,
 			adminUser config.AdminUser,
 		) Repo {
-			if createRootAdmin {
+			if createAdminIfNone {
+				user := dbmodel.User{
+					Email: adminUser.Email,
+				}
+
 				hashedPassword, err := utilities.HashPassword(adminUser.Password)
 				if err != nil {
 					log.Fatalln(err.Error())
 				}
 
-				result := gormDB.Create(
-					&dbmodel.User{
-						Email:          adminUser.Email,
-						HashedPassword: hashedPassword,
-						IsAdmin:        true,
-					},
-				)
+				result := gormDB.
+					Where(dbmodel.User{IsAdmin: true}).
+					Attrs(dbmodel.User{HashedPassword: hashedPassword, IsAdmin: true}).
+					FirstOrCreate(&user, user)
 
 				if result.Error != nil {
 					log.Fatalln(result.Error.Error())
