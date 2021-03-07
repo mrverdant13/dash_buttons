@@ -42,6 +42,7 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	AdminAction func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -457,6 +458,8 @@ var sources = []*ast.Source{
   forceResolver: Boolean
   name: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
+
+directive @adminAction on FIELD_DEFINITION
 `, BuiltIn: false},
 	{Name: "graph/schemas/auth.graphql", Input: `"Login credentials."
 input Login {
