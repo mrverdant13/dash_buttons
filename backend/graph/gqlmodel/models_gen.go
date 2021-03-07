@@ -58,8 +58,6 @@ type NewUser struct {
 	Email string `json:"email"`
 	// New user password.
 	Password string `json:"password"`
-	// New user admin indicator.
-	IsAdmin *bool `json:"isAdmin"`
 }
 
 // Province data.

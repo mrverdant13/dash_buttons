@@ -21,7 +21,7 @@ func NewRepo(gormDB *gorm.DB) Repo {
 	}
 }
 
-func (r *repo) CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error) {
+func (r *repo) CreateUser(newUser gqlmodel.NewUser, newUserIsAdmin bool) (*gqlmodel.User, error) {
 	hashedPassword, err := utilities.HashPassword(newUser.Password)
 	if err != nil {
 		log.Println(err.Error())
@@ -31,7 +31,7 @@ func (r *repo) CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error) {
 	user := dbmodel.User{
 		Email:          newUser.Email,
 		HashedPassword: hashedPassword,
-		IsAdmin:        *newUser.IsAdmin,
+		IsAdmin:        newUserIsAdmin,
 	}
 
 	result := r.gormDB.Create(

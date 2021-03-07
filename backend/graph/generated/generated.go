@@ -60,6 +60,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		CreateAdminUser  func(childComplexity int, input gqlmodel.NewUser) int
 		CreateDepartment func(childComplexity int, input gqlmodel.NewDepartment) int
 		CreateDistrict   func(childComplexity int, input gqlmodel.NewDistrict) int
 		CreateProvince   func(childComplexity int, input gqlmodel.NewProvince) int
@@ -107,6 +108,7 @@ type MutationResolver interface {
 	CreateProvince(ctx context.Context, input gqlmodel.NewProvince) (*gqlmodel.Province, error)
 	DeleteProvince(ctx context.Context, id int64) (*gqlmodel.Province, error)
 	CreateUser(ctx context.Context, input gqlmodel.NewUser) (*gqlmodel.User, error)
+	CreateAdminUser(ctx context.Context, input gqlmodel.NewUser) (*gqlmodel.User, error)
 }
 type ProvinceResolver interface {
 	Districts(ctx context.Context, obj *gqlmodel.Province) ([]*gqlmodel.District, error)
@@ -176,6 +178,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.District.ProvinceID(childComplexity), true
+
+	case "Mutation.createAdminUser":
+		if e.complexity.Mutation.CreateAdminUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createAdminUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateAdminUser(childComplexity, args["input"].(gqlmodel.NewUser)), true
 
 	case "Mutation.createDepartment":
 		if e.complexity.Mutation.CreateDepartment == nil {
@@ -609,14 +623,12 @@ input NewUser {
 
   "New user password."
   password: String!
-
-  "New user admin indicator."
-  isAdmin: Boolean = true
 }
 
 extend type Mutation {
   "Create a new user."
   createUser(input: NewUser!): User!
+  createAdminUser(input: NewUser!): User! @adminAction
 }
 `, BuiltIn: false},
 }
@@ -625,6 +637,21 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_createAdminUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 gqlmodel.NewUser
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewUser2githubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐNewUser(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_createDepartment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1551,6 +1578,68 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().CreateUser(rctx, args["input"].(gqlmodel.NewUser))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*gqlmodel.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋmrverdant13ᚋdash_buttonsᚋbackendᚋgraphᚋgqlmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_createAdminUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_createAdminUser_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().CreateAdminUser(rctx, args["input"].(gqlmodel.NewUser))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.AdminAction == nil {
+				return nil, errors.New("directive adminAction is not implemented")
+			}
+			return ec.directives.AdminAction(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*gqlmodel.User); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/mrverdant13/dash_buttons/backend/graph/gqlmodel.User`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3309,10 +3398,6 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 	var it gqlmodel.NewUser
 	var asMap = obj.(map[string]interface{})
 
-	if _, present := asMap["isAdmin"]; !present {
-		asMap["isAdmin"] = true
-	}
-
 	for k, v := range asMap {
 		switch k {
 		case "email":
@@ -3328,14 +3413,6 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
 			it.Password, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "isAdmin":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isAdmin"))
-			it.IsAdmin, err = ec.unmarshalOBoolean2ᚖbool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3493,6 +3570,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			}
 		case "createUser":
 			out.Values[i] = ec._Mutation_createUser(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "createAdminUser":
+			out.Values[i] = ec._Mutation_createAdminUser(ctx, field)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

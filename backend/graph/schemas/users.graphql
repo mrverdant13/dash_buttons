@@ -17,12 +17,10 @@ input NewUser {
 
   "New user password."
   password: String!
-
-  "New user admin indicator."
-  isAdmin: Boolean = true
 }
 
 extend type Mutation {
   "Create a new user."
   createUser(input: NewUser!): User!
+  createAdminUser(input: NewUser!): User! @adminAction
 }
