@@ -68,6 +68,17 @@ func Auth() func(http.Handler) http.Handler {
 //
 // REQUIRES the auth middleware to have run.
 func CtxUser(ctx context.Context) *gqlmodel.User {
-	raw, _ := ctx.Value(userCtxKey).(*gqlmodel.User)
-	return raw
+	user, _ := ctx.Value(userCtxKey).(*gqlmodel.User)
+	return user
+}
+
+// CtxAdminUser get the admin user from the context.
+//
+// REQUIRES the auth middleware to have run.
+func CtxAdminUser(ctx context.Context) *gqlmodel.User {
+	user := CtxUser(ctx)
+	if user == nil || !user.IsAdmin {
+		return nil
+	}
+	return user
 }
