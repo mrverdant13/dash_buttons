@@ -31,6 +31,7 @@ func (r *repo) CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error) {
 	user := dbmodel.User{
 		Email:          newUser.Email,
 		HashedPassword: hashedPassword,
+		IsAdmin:        *newUser.IsAdmin,
 	}
 
 	result := r.gormDB.Create(
@@ -42,8 +43,9 @@ func (r *repo) CreateUser(newUser gqlmodel.NewUser) (*gqlmodel.User, error) {
 	}
 
 	_user := gqlmodel.User{
-		ID:    int64(user.ID),
-		Email: user.Email,
+		ID:      int64(user.ID),
+		Email:   user.Email,
+		IsAdmin: user.IsAdmin,
 	}
 
 	return &_user, nil
@@ -59,8 +61,9 @@ func (r *repo) GetByID(id uint64) (*gqlmodel.User, error) {
 	}
 
 	_user := gqlmodel.User{
-		ID:    int64(user.ID),
-		Email: user.Email,
+		ID:      int64(user.ID),
+		Email:   user.Email,
+		IsAdmin: user.IsAdmin,
 	}
 
 	return &_user, result.Error

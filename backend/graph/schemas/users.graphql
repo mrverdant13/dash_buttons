@@ -5,6 +5,9 @@ type User {
 
   "User email."
   email: String!
+
+  "User admin indicator."
+  isAdmin: Boolean!
 }
 
 "New user data."
@@ -14,6 +17,9 @@ input NewUser {
 
   "New user password."
   password: String!
+
+  "New user admin indicator."
+  isAdmin: Boolean = true
 }
 
 extend type Mutation {
