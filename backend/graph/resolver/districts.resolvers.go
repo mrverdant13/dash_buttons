@@ -13,8 +13,8 @@ import (
 )
 
 func (r *mutationResolver) CreateDistrict(ctx context.Context, input gqlmodel.NewDistrict) (*gqlmodel.District, error) {
-	user := middlewares.CtxUser(ctx)
-	if user == nil {
+	adminUser := middlewares.CtxAdminUser(ctx)
+	if adminUser == nil {
 		err := fmt.Errorf("Access denied")
 		log.Println(err.Error())
 		return nil, err
@@ -24,8 +24,8 @@ func (r *mutationResolver) CreateDistrict(ctx context.Context, input gqlmodel.Ne
 }
 
 func (r *mutationResolver) DeleteDistrict(ctx context.Context, id int64) (*gqlmodel.District, error) {
-	user := middlewares.CtxUser(ctx)
-	if user == nil {
+	adminUser := middlewares.CtxAdminUser(ctx)
+	if adminUser == nil {
 		err := fmt.Errorf("Access denied")
 		log.Println(err.Error())
 		return nil, err
