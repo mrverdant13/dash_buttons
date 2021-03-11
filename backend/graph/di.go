@@ -7,6 +7,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/go-chi/chi"
+	"github.com/go-chi/cors"
 	"github.com/golobby/container"
 	"github.com/mrverdant13/dash_buttons/backend/config"
 	"github.com/mrverdant13/dash_buttons/backend/facades/auth"
@@ -45,6 +46,7 @@ func Init() {
 	router := chi.NewRouter()
 
 	router.Use(middlewares.Auth())
+	router.Use(cors.AllowAll().Handler) // TODO: Check if should be restricted.
 
 	resolver := resolver.NewResolver(
 		authService,
