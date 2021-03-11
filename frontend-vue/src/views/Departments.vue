@@ -1,33 +1,43 @@
 <template>
   <div class="departments">
-    <img alt="Vue logo" src="../assets/logo.png" />
     <h1>Departments</h1>
-    <ul>
-      <li v-for="department in departments" :key="department.id">
-        <DepartmentCard :department="department" />
-      </li>
-    </ul>
+    <DepartmentCard
+      v-for="department in departments"
+      :key="department.id"
+      :department="department"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
+import { useQuery, useResult } from "@vue/apollo-composable";
+import { gql } from "@apollo/client";
+
 import { Department } from "@/types";
 
 import DepartmentCard from "@/components/DepartmentCard.vue";
 
-const _departments: Department[] = [
-  { id: 1, name: "Dep 1" },
-  { id: 2, name: "Dep 2" },
-  { id: 3, name: "Dep 3" },
-];
+const allDepartmentsQuery = gql`
+  query allDepartments {
+    departments {
+      id
+      name
+    }
+  }
+`;
 
 export default defineComponent({
   name: "Departments",
   components: { DepartmentCard },
   setup() {
-    const departments = _departments;
+    const { result: departmentsResult } = useQuery(allDepartmentsQuery);
+    const departments = useResult(
+      departmentsResult,
+      [] as Department[],
+      (data) => data.departments as Department[]
+    );
 
     return {
       departments,
